@@ -15,6 +15,7 @@ namespace DietDungeon
         static Monster[] monsters;
         static Monster[] spawnMonsters;
 
+
         static void Main(string[] args)
         {
             PrintStartLogo();
@@ -134,8 +135,9 @@ namespace DietDungeon
             Console.Clear();
 
             Console.WriteLine("");
-            Console.WriteLine("몬스터를 만났습니다. 전투를 시작하시겠습니까?");
+            ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
+
 
             int count = new Random().Next(1, 5);
             /*int[] attacktargets = new int[4];*/ //박창현추가
@@ -153,13 +155,13 @@ namespace DietDungeon
             }
 
             Console.WriteLine();
-            Console.WriteLine(" [내 정보]");            
+            Console.WriteLine(" [내 정보]");
             Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
             Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
 
-            Console.WriteLine();
-            Console.WriteLine("1. 전투 시작");
-            Console.WriteLine();
+            Console.WriteLine("");
+            Console.WriteLine("1. 공격");
+            Console.WriteLine("");
 
             switch (CheckValidInput(1, 1))
             {
@@ -180,20 +182,20 @@ namespace DietDungeon
             ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
 
-            for (int i = 0; i < count; ++i) //
+            for (int i = 0; i < count; i++) //
             {
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.Write($" {i + 1}");
+                Console.Write($"{i + 1}");
                 Console.ResetColor();
                 spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
             }
             Console.WriteLine();
-            Console.WriteLine(" [내 정보]");            
+            Console.WriteLine(" [내 정보]");
             Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
             Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
 
             Console.WriteLine("");
-            Console.WriteLine(" 1. 공격");
+            Console.WriteLine("1. 공격");
             Console.WriteLine("");
             switch (CheckValidInput(1, 1))
             {
@@ -211,18 +213,20 @@ namespace DietDungeon
             ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
 
-            for (int i = 0; i < count; ++i) //
+            for (int i = 0; i < count; i++)
             {
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
                 Console.Write($" {i + 1}");
                 Console.ResetColor();
-                spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
+                spawnMonsters[i].MonsterDescription();
             }
             Console.WriteLine();
 
-            Console.WriteLine("공격할 몬스터 번호 입력");
             Console.WriteLine("0. 취소");
             Console.WriteLine();
+
+            Console.WriteLine("대상을 선택해주세요.");
+            Console.Write(">> ");
 
             int CheckValue = CheckValidInput(0, count);
 
@@ -235,26 +239,24 @@ namespace DietDungeon
                 case 2:
                 case 3:
                 case 4:
-                    if(spawnMonsters[CheckValue-1].Hp <= 0)
+                    if (spawnMonsters[CheckValue - 1].Hp <= 0)
                     {
                         Console.WriteLine("이미 죽은 몬스터 입니다");
                         AttackPhase(count, spawnMonsters);
                     }
-                    player.Attack(spawnMonsters[CheckValue-1]);              
-                    break;                    
-            }
-
-            Console.WriteLine("0. 다음턴");
-            Console.WriteLine();
-
-
-            switch (CheckValidInput(0, 0))
-            {
-                case 0:
-                    EnemyPhase(count, spawnMonsters);
+                    player.Attack(spawnMonsters[CheckValue - 1]);
                     break;
             }
 
+            Console.WriteLine("1. 다음턴");
+            Console.WriteLine();
+
+            switch (CheckValidInput(1, 1))
+            {
+                case 1:
+                    AttackPhase(count, spawnMonsters);
+                    break;
+            }
 
             //Console.WriteLine("대상을 선택해주세요.");
             //Console.Write(">> ");
@@ -275,7 +277,6 @@ namespace DietDungeon
             //    }
             //
             //}
-
         }
 
         private static void EnemyPhase(int count, Monster[] monster)
@@ -297,8 +298,10 @@ namespace DietDungeon
 
             Console.WriteLine(player.Hp);
             Random rand = new Random();
-            spawnMonsters[rand.Next(1,count)-1].Attack(player);
+            spawnMonsters[rand.Next(1, count) - 1].Attack(player);
         }
+
+
 
         private static void PrintTextwithHighlights(string s1, string s2, string s3 = "")
         {

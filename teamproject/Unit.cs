@@ -20,24 +20,21 @@
             var damage = rand.Next(atk - error, atk + error);
             var targetHealth = Math.Max(target.hp - damage, 0);
 
-            Console.WriteLine();
-            Console.WriteLine($"{name}의 공격!");
-            Console.WriteLine($"{target.Name} 을(를) 맞췄습니다. [데미지 : {damage}]");
+            Console.WriteLine($"Lv.{level} {name} 의 공격!");
+            Console.WriteLine($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
             Console.WriteLine();
             Console.WriteLine($"Lv.{target.Level} {target.Name}");
             Console.Write($"Hp {target.hp} -> ");
-
+           
 
 
             if (targetHealth > 0)
             {
                 Console.WriteLine($"{targetHealth}");
-                Console.WriteLine();
             }
             else
             {
                 Console.WriteLine($"Dead");
-                Console.WriteLine();
             }
 
             target.Hp = targetHealth;
