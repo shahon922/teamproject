@@ -90,7 +90,6 @@ namespace DietDungeon
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 전투 시작");
             Console.WriteLine("3. 게임 종료");
-            Console.WriteLine("확인중입니다.");
             Console.WriteLine("");
 
             switch (CheckValidInput(1, 3))
