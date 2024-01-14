@@ -72,5 +72,10 @@ namespace DietDungeon
         {
             Console.WriteLine($" Lv.{Level} {Name} | HP {Hp}");
         }
+
+        internal void Attack()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

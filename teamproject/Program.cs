@@ -242,19 +242,19 @@ namespace DietDungeon
                     if (spawnMonsters[CheckValue - 1].Hp <= 0)
                     {
                         Console.WriteLine("이미 죽은 몬스터 입니다");
-                        AttackPhase(count, spawnMonsters);
+                        _ = (count, spawnMonsters);
                     }
                     player.Attack(spawnMonsters[CheckValue - 1]);
                     break;
             }
-
+            
             Console.WriteLine("1. 다음턴");
             Console.WriteLine();
 
             switch (CheckValidInput(1, 1))
             {
                 case 1:
-                    AttackPhase(count, spawnMonsters);
+                    EnemyPhase(count, spawnMonsters);
                     break;
             }
 
@@ -287,18 +287,37 @@ namespace DietDungeon
             ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
 
-            for (int i = 0; i < count; ++i) //
+            for (int i = 0; i < count; ++i)
             {
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
                 Console.Write($" {i + 1}");
                 Console.ResetColor();
                 spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
             }
-            Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine(player.Hp);
+                Random rand = new Random();
+                spawnMonsters[rand.Next(1, count) - 1].Attack(player);
 
-            Console.WriteLine(player.Hp);
-            Random rand = new Random();
-            spawnMonsters[rand.Next(1, count) - 1].Attack(player);
+                Console.WriteLine("");
+                Console.WriteLine("0. 다음");
+                Console.WriteLine("");
+                Console.WriteLine("대상을 선택해주세요.");
+                Console.WriteLine(">>");
+            
+            switch (CheckValidInput(0, 0))
+            {
+                case 0:
+                    EnemyPhase(count, spawnMonsters); 
+                    break;
+            }
+            switch (CheckValidInput(1, 1))
+            {
+                case 1:
+                    AttackPhase(count, spawnMonsters);
+                    break;
+            }
+
         }
 
 
