@@ -12,13 +12,15 @@ namespace teamproject
         public string SkillDescription { get; set; }
         public float SkillAtk { get; set; }
         public int SkillMp { get; set; }
+        public int TargetCount { get; set; }
 
-        public Skill(string skillName, string skillDescription, float skillAtk, int skillMp)
+        public Skill(string skillName, string skillDescription, float skillAtk, int skillMp, int targetCount)
         {
             SkillName = skillName;
             SkillDescription = skillDescription;
             SkillAtk = skillAtk;
             SkillMp = skillMp;
+            TargetCount = targetCount;
         }
         public Skill(string skillName, string skillDescription)
         {
@@ -26,6 +28,7 @@ namespace teamproject
             SkillDescription = skillDescription;
             SkillAtk = 0;
             SkillMp = 0;
+            TargetCount = 0;
         }
     }
 }

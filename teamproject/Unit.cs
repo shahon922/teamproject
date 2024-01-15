@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using teamproject;
 
 namespace DietDungeon
 {
@@ -19,6 +20,36 @@ namespace DietDungeon
             var targetHealth = (int)(target.Hp - damage);
 
             Console.WriteLine($"Lv.{Level} {Name} 의 공격!");
+            Console.WriteLine($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
+            Console.WriteLine();
+            Console.WriteLine($"Lv.{target.Level} {target.Name}");
+            Console.Write($"Hp {target.Hp} -> ");
+
+            if (targetHealth > 0)
+            {
+                Console.WriteLine($"{targetHealth}");
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine($"Dead");
+                targetHealth = 0;
+                Console.WriteLine();
+            }
+
+            target.Hp = targetHealth;
+        }
+
+        public void SkillAttack(Unit target, Skill skill)
+        {
+            var playerAtk = Atk * skill.SkillAtk;
+
+            var rand = new Random();
+            var error = Math.Ceiling(playerAtk / 10.0);
+            var damage = rand.Next((int)(playerAtk - error), (int)(playerAtk + error));
+            var targetHealth = (int)(target.Hp - damage);
+
+            Console.WriteLine($"Lv.{Level} {Name} 의 {skill.SkillName} 스킬 공격!");
             Console.WriteLine($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
             Console.WriteLine();
             Console.WriteLine($"Lv.{target.Level} {target.Name}");

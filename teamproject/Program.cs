@@ -70,10 +70,10 @@ namespace DietDungeon
             //Skill
             skills = new Skill[5];
             skills[0] = new Skill("X", "스킬을 아직 배우지 못했습니다.");
-            skills[1] = new Skill("알파 스트라이크", "공격력의 3배로 하나의 적을 공격합니다.", 3, 20);
-            skills[2] = new Skill("더블 스트라이크", "공격력의 1.5배로 2명의 적을 랜덤으로 공격합니다.", 1.5f, 10);
-            skills[3] = new Skill("에너지 볼트", "공격력의 2배로 하나의 적을 공격합니다.", 2, 20);
-            skills[4] = new Skill("체인 라이트닝", "공격력의 변화는 없지만 3명의 적을 랜덤으로 공격합니다", 1, 10);
+            skills[1] = new Skill("알파 스트라이크", "공격력의 3배로 하나의 적을 공격합니다.", 3, 20, 1);
+            skills[2] = new Skill("더블 스트라이크", "공격력의 1.5배로 2명의 적을 랜덤으로 공격합니다.", 1.5f, 10, 2);
+            skills[3] = new Skill("에너지 볼트", "공격력의 2배로 하나의 적을 공격합니다.", 2, 20, 1);
+            skills[4] = new Skill("체인 라이트닝", "공격력의 변화는 없지만 3명의 적을 랜덤으로 공격합니다", 1, 10, 3);
 
             //Job
             jobs = new Job[3];
@@ -142,7 +142,7 @@ namespace DietDungeon
                     break;
                 case 3:
                     Console.WriteLine("■ 게임을 종료합니다 ■");
-                    return;
+                    break;
             }
         }
 
@@ -237,35 +237,78 @@ namespace DietDungeon
                     break;
                 case 1:
                     BattleInfo("Battle!!");
-                    PlayerAttack(count, spawnMonsters);
+                    PlayerPhase(count, spawnMonsters);
                     break;
             }
 
         }
 
-        private static void PlayerAttack(int count, Monster[] monster)
+        private static void PlayerPhase(int count, Monster[] monster)//PlayerAttack->PlayerPhase
         {
             MonsterInfo(count);
 
             PlayerInfo();
 
-            //Console.WriteLine("");
-            //Console.WriteLine("1. 공격");
-            //Console.WriteLine("2. 스킬");
-            //
-            //switch (CheckInput(1, 2))
-            //{
-            //    case 1:
-            //        Attack();
-            //        break;
-            //    case 2:
-            //        SkillAttack();
-            //        break;
-            //}
-
             Console.WriteLine("");
-            Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
+            Console.WriteLine("1. 일반 공격");
+            Console.WriteLine("2. 스킬 공격");
 
+            switch (CheckInput(1, 2))
+            {
+                case 1:
+                    PlayerAttack(count, spawnMonsters);
+                    break;
+                case 2:
+                    PlayerSkillAttack(count, spawnMonsters);
+                    break;
+            }
+        }
+
+        private static void PlayerSkillAttack(int count, Monster[] monster)
+        {         
+            Console.WriteLine("[스킬 선택]");
+            Console.WriteLine();
+
+            SkillInfo();
+
+            int[] rand;
+
+            switch (CheckInput(1, 2))
+            {
+                case 1:
+                    PlayerAttack(count, spawnMonsters, true);
+                    break;
+                case 2:
+                    rand = new int[player.job.skill2.TargetCount];
+                    for (int i = 0; i < player.job.skill2.TargetCount; i++)
+                    {
+                        if (spawnMonsters.All(x => x.Hp == 0))
+                            Victory(count);
+
+                        rand[i] = new Random().Next(0, count);
+                        while (spawnMonsters[rand[i]].Hp <= 0)
+                        {
+                            rand[i] = new Random().Next(0, count);
+                        }                       
+                        player.SkillAttack(spawnMonsters[rand[i]], player.job.skill2);
+                    }
+                    break;
+            }
+
+            Console.WriteLine("1. 다음턴");
+
+            switch (CheckInput(1, 1))
+            {
+                case 1:
+                    BattleInfo("Battle!!");
+                    MonsterAttack(count, spawnMonsters);
+                    break;
+            }
+        }
+
+        private static void PlayerAttack(int count, Monster[] monster, bool skill = false)
+        {
+            Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
 
             int CheckValue = CheckInput(0, count);
 
@@ -281,12 +324,16 @@ namespace DietDungeon
                         Console.WriteLine("다시 입력해주세요.");
                         Console.ReadKey();
                         BattleInfo("Battle!!");
-                        PlayerAttack(count, spawnMonsters);
+                        PlayerPhase(count, spawnMonsters);
+                        break;
+                    }
+                    else if (skill == true) //스킬공격
+                    {
+                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.job.skill1);
                         break;
                     }
                     else
-                    {
-                        
+                    {                      
                         player.Attack(spawnMonsters[CheckValue - 1]);
                         break;
                     }
@@ -302,6 +349,23 @@ namespace DietDungeon
                     break;
             }
         }
+
+
+        public static void SkillInfo()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("1");
+            Console.ResetColor();
+            PrintTextwithHighlights($". {player.job.skill1.SkillName} - MP ", player.job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.job.skill1.SkillDescription}");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("2");
+            Console.ResetColor();
+            PrintTextwithHighlights($". {player.job.skill2.SkillName} - MP ", player.job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.job.skill2.SkillDescription}");
+        }
+
 
         private static void MonsterAttack(int count, Monster[] monster)
         {
@@ -333,7 +397,7 @@ namespace DietDungeon
             {
                 case 1:
                     BattleInfo("Battle!!");
-                    PlayerAttack(count, spawnMonsters);
+                    PlayerPhase(count, spawnMonsters);
                     break;
             }
         }
@@ -413,7 +477,7 @@ namespace DietDungeon
         }
 
         //Text Color
-        private static void PrintTextwithHighlights(string s1, string s2, string s3 = "")
+        private static void PrintTextwithHighlights(string s1, string s2, string s3 = "", ConsoleColor color = ConsoleColor.Green)
         {
             Console.Write(s1);
             Console.ForegroundColor = ConsoleColor.Green;
