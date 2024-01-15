@@ -93,6 +93,8 @@ namespace DietDungeon
             Console.WriteLine("3. 게임 종료");
             Console.WriteLine("");
 
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             switch (CheckValidInput(1, 3))
             {
                 case 1:
@@ -122,6 +124,8 @@ namespace DietDungeon
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
             Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             switch (CheckValidInput(0, 0))
             {
                 case 0:
@@ -162,6 +166,7 @@ namespace DietDungeon
             Console.WriteLine("");
             Console.WriteLine("1. 공격");
             Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckValidInput(1, 1))
             {
@@ -197,6 +202,9 @@ namespace DietDungeon
             Console.WriteLine("");
             Console.WriteLine("1. 공격");
             Console.WriteLine("");
+
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             switch (CheckValidInput(1, 1))
             {
                 case 1:
@@ -226,7 +234,7 @@ namespace DietDungeon
             Console.WriteLine();
 
             Console.WriteLine("대상을 선택해주세요.");
-            Console.Write(">> ");
+            //Console.Write(">> ");
 
             int CheckValue = CheckValidInput(0, count);
 
@@ -251,6 +259,7 @@ namespace DietDungeon
             Console.WriteLine("1. 다음턴");
             Console.WriteLine();
 
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
             switch (CheckValidInput(1, 1))
             {
                 case 1:
@@ -326,7 +335,7 @@ namespace DietDungeon
             Console.WriteLine("0. 다음");
             Console.WriteLine("");
             Console.WriteLine("대상을 선택해주세요.");
-            Console.WriteLine(">>");
+            //Console.WriteLine(">>");
 
             int CheckValue = CheckValidInput(0, count);
 
@@ -359,6 +368,7 @@ namespace DietDungeon
             Console.WriteLine("1. 시작화면");
             Console.WriteLine();
 
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
             switch (CheckValidInput(1, 1))
             {
                 case 1:
@@ -387,6 +397,7 @@ namespace DietDungeon
             Console.WriteLine("1. 시작화면");
             Console.WriteLine();
 
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
             switch (CheckValidInput(1, 1))
             {
                 case 1:
@@ -419,7 +430,7 @@ namespace DietDungeon
             // (1) 숫자가 아닌 입력을 받은 경우
             // (2) 숫자가 최소값 ~ 최대값의 범위를 넘는 경우
 
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            //Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             while (true)
             {
