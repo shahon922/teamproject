@@ -28,7 +28,9 @@ namespace DietDungeon
         {
             if (Hp <= 0)
             {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine($" Lv.{Level} {Name} | DEAD");
+                Console.ResetColor();
             }
             else
             {
