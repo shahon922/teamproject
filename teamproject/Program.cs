@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -16,6 +17,7 @@ namespace DietDungeon
         static Skill[] skills;
         static Monster[] monsters;
         static Monster[] spawnMonsters;
+        static int count;
 
         static void Main(string[] args)
         {
@@ -192,7 +194,7 @@ namespace DietDungeon
             Console.WriteLine(" MP {0}/{1}", player.Mp, player.job.Mp);
         }
 
-        private static void MonsterInfo(int count, bool battle = true)
+        private static void MonsterInfo(bool battle = true)
         {
             Console.WriteLine(" [몬스터 정보]");
 
@@ -213,7 +215,7 @@ namespace DietDungeon
         private static void BattleStart()
         {
             // Monster Setting
-            int count = new Random().Next(1, 5);
+            count = new Random().Next(1, 5);
             spawnMonsters = new Monster[count];
 
             for (int i = 0; i < count; ++i)
@@ -222,7 +224,7 @@ namespace DietDungeon
                 spawnMonsters[i] = new Monster(monsters[idx]);
             }
 
-            MonsterInfo(count, false);
+            MonsterInfo(false);
 
             PlayerInfo();
 
@@ -237,15 +239,15 @@ namespace DietDungeon
                     break;
                 case 1:
                     BattleInfo("Battle!!");
-                    PlayerPhase(count, spawnMonsters);
+                    PlayerPhase();
                     break;
             }
 
         }
 
-        private static void PlayerPhase(int count, Monster[] monster)//PlayerAttack->PlayerPhase
+        private static void PlayerPhase()//PlayerAttack->PlayerPhase
         {
-            MonsterInfo(count);
+            MonsterInfo();
 
             PlayerInfo();
 
@@ -256,57 +258,15 @@ namespace DietDungeon
             switch (CheckInput(1, 2))
             {
                 case 1:
-                    PlayerAttack(count, spawnMonsters);
+                    PlayerAttack();
                     break;
                 case 2:
-                    PlayerSkillAttack(count, spawnMonsters);
+                    PlayerSkillAttack();
                     break;
             }
         }
 
-        private static void PlayerSkillAttack(int count, Monster[] monster)
-        {         
-            Console.WriteLine("[스킬 선택]");
-            Console.WriteLine();
-
-            SkillInfo();
-
-            int[] rand;
-
-            switch (CheckInput(1, 2))
-            {
-                case 1:
-                    PlayerAttack(count, spawnMonsters, true);
-                    break;
-                case 2:
-                    rand = new int[player.job.skill2.TargetCount];
-                    for (int i = 0; i < player.job.skill2.TargetCount; i++)
-                    {
-                        if (spawnMonsters.All(x => x.Hp == 0))
-                            Victory(count);
-
-                        rand[i] = new Random().Next(0, count);
-                        while (spawnMonsters[rand[i]].Hp <= 0)
-                        {
-                            rand[i] = new Random().Next(0, count);
-                        }                       
-                        player.SkillAttack(spawnMonsters[rand[i]], player.job.skill2);
-                    }
-                    break;
-            }
-
-            Console.WriteLine("1. 다음턴");
-
-            switch (CheckInput(1, 1))
-            {
-                case 1:
-                    BattleInfo("Battle!!");
-                    MonsterAttack(count, spawnMonsters);
-                    break;
-            }
-        }
-
-        private static void PlayerAttack(int count, Monster[] monster, bool skill = false)
+        private static void PlayerAttack(bool skill = false)
         {
             Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
 
@@ -324,16 +284,17 @@ namespace DietDungeon
                         Console.WriteLine("다시 입력해주세요.");
                         Console.ReadKey();
                         BattleInfo("Battle!!");
-                        PlayerPhase(count, spawnMonsters);
+                        PlayerPhase();
                         break;
                     }
                     else if (skill == true) //스킬공격
                     {
                         player.SkillAttack(spawnMonsters[CheckValue - 1], player.job.skill1);
+                        player.Mp -= player.job.skill1.SkillMp;
                         break;
                     }
                     else
-                    {                      
+                    {
                         player.Attack(spawnMonsters[CheckValue - 1]);
                         break;
                     }
@@ -345,10 +306,61 @@ namespace DietDungeon
             {
                 case 1:
                     BattleInfo("Battle!!");
-                    MonsterAttack(count, spawnMonsters);
+                    MonsterAttack();
                     break;
             }
         }
+
+        private static void PlayerSkillAttack()
+        {         
+            Console.WriteLine("[스킬 선택]");
+            Console.WriteLine();
+
+            SkillInfo();
+
+            int[] rand;
+
+            switch (CheckInput(1, 2))
+            {
+                case 1:
+                    PlayerAttack(true);
+                    return;
+                case 2:
+                    rand = new int[player.job.skill2.TargetCount];
+                    for (int i = 0; i < player.job.skill2.TargetCount; i++)
+                    {
+                        if (spawnMonsters.All(x => x.Hp == 0))
+                        {
+                            Victory(count);
+                            player.Mp -= player.job.skill2.SkillMp;
+                            return;
+                        }                            
+                        else
+                        {
+                            rand[i] = new Random().Next(0, count);
+                            while (spawnMonsters[rand[i]].Hp <= 0)
+                            {
+                                rand[i] = new Random().Next(0, count);
+                            }                       
+                            player.SkillAttack(spawnMonsters[rand[i]], player.job.skill2);                            
+                        }
+                    }
+                    player.Mp -= player.job.skill2.SkillMp;
+                    break;
+            }
+
+            Console.WriteLine("1. 다음턴");
+
+            switch (CheckInput(1, 1))
+            {
+                case 1:
+                    BattleInfo("Battle!!");
+                    MonsterAttack();
+                    break;
+            }
+        }
+
+       
 
 
         public static void SkillInfo()
@@ -367,28 +379,24 @@ namespace DietDungeon
         }
 
 
-        private static void MonsterAttack(int count, Monster[] monster)
+        private static void MonsterAttack()
         {
-            bool result = monster.All(x => x.Hp == 0);
+            bool result = spawnMonsters.All(x => x.Hp == 0);
 
+            if (result)
+            {
+                Victory(count);
+                return;
+            }
+            if (player.Hp <= 0)
+            {
+                Lose();
+                return;
+            }
             for (int i = 0; i < count; i++)
             {
-                if (result)
-                {
-                    Victory(count);
-                }
-                else
-                {
-                    if (monster[i].Hp > 0)
-                    {
-                        monster[i].Attack(player);
-                        if (player.Hp <= 0)
-                        {
-                            Lose();
-                        }
-
-                    }
-                }
+                if (spawnMonsters[i].Hp > 0)
+                    spawnMonsters[i].Attack(player);
             }
 
             Console.WriteLine("1. 다음턴");
@@ -397,7 +405,7 @@ namespace DietDungeon
             {
                 case 1:
                     BattleInfo("Battle!!");
-                    PlayerPhase(count, spawnMonsters);
+                    PlayerPhase();
                     break;
             }
         }
