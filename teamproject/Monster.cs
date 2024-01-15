@@ -7,32 +7,6 @@ using System.Threading.Tasks;
 
 namespace DietDungeon
 {
-    //public class Monster : Unit
-    //{
-    //    public string Name { get; }
-    //    public int Level { get; }
-    //    public int Hp { get; }
-    //    public int Atk { get; }
-
-    //    public Monster(string name, int level, int hp, int atk)
-    //    {
-    //        Name = name;
-    //        Level = level;
-    //        Hp = hp;
-    //        Atk = atk;
-    //    }
-
-    //    public void MonsterDescription()
-    //    {
-    //        Console.WriteLine($" Lv.{Level} {Name} | HP {Hp}");
-    //    }
-
-    //    public override void Print()
-    //    {
-
-    //    }
-    //}
-
     public class Monster : Unit
     {
         public Monster(String name, int level, int hp, int atk)
@@ -44,38 +18,22 @@ namespace DietDungeon
         }
         public Monster(Monster other)
         {
-            this.Name = other.name;
-            this.Level = other.level;
-            this.Hp = other.hp;
-            this.Atk = other.atk;
+            this.Name = other.Name;
+            this.Level = other.Level;
+            this.Hp = other.Hp;
+            this.Atk = other.Atk;
         }
 
-        public String getInfo()
+        public void MonsterDescription()
         {
-            return $"Lv.{level} {name} {hp} {atk}";
-        }
-
-        public override void Print()
-        {
-            Console.Write($"Lv.{level} {name} ");
-            if (hp > 0)
+            if (Hp <= 0)
             {
-                Console.WriteLine($"{hp} {atk}");
+                Console.WriteLine($" Lv.{Level} {Name} | DEAD");
             }
             else
             {
-                Console.WriteLine($"Dead");
+                Console.WriteLine($" Lv.{Level} {Name} | HP {Hp}");
             }
-
-        }
-        public void MonsterDescription()
-        {
-            Console.WriteLine($" Lv.{Level} {Name} | HP {Hp}");
-        }
-
-        internal void Attack()
-        {
-            throw new NotImplementedException();
         }
     }
 }

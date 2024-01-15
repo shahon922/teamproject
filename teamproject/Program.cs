@@ -5,24 +5,28 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using teamproject;
 
 namespace DietDungeon
 {
-    
     internal class Program
     {
-        static Character player;
+        static Player player;
+        static Job[] jobs;
         static Monster[] monsters;
         static Monster[] spawnMonsters;
-
+        static Skill[] skills;
 
         static void Main(string[] args)
         {
             PrintStartLogo();
             GameDataSetting();
+            PlayerSetting();
             StartMenu();
         }
 
+
+        // Setting
         private static void PrintStartLogo()
         {
             Console.WriteLine("");
@@ -56,52 +60,87 @@ namespace DietDungeon
 
         private static void GameDataSetting()
         {
-            Console.Clear();
-            Console.WriteLine("");
-            Console.WriteLine(" 캐릭터의 이름을 입력해주세요.");
-            Console.WriteLine("");
-            Console.Write(" >> ");
-            string Name = Console.ReadLine();
-
-            player = new Character($"{Name}", "초보자", 1, 10, 5, 100, 1500);
-
+            //Monster
             monsters = new Monster[3];
             monsters[0] = new Monster("탕후루", 2, 15, 5);
             monsters[1] = new Monster("떡볶이", 3, 25, 9);
             monsters[2] = new Monster("대창", 5, 20, 8);
 
+            //Skill
+            skills = new Skill[5];
+            skills[0] = new Skill("X", "스킬을 아직 배우지 못했습니다.");
+            skills[1] = new Skill("알파 스트라이크", "공격력의 3배로 하나의 적을 공격합니다.", 3, 20);
+            skills[2] = new Skill("더블 스트라이크", "공격력의 1.5배로 2명의 적을 랜덤으로 공격합니다.", 1.5f, 10);
+            skills[3] = new Skill("에너지 볼트", "공격력의 2배로 하나의 적을 공격합니다.", 2, 20);
+            skills[4] = new Skill("체인 라이트닝", "공격력의 변화는 없지만 3명의 적을 랜덤으로 공격합니다", 1, 10);
+
+            //Job
+            jobs = new Job[3];
+            jobs[0] = new Job("초보자", skills[0]);
+            jobs[1] = new Job("전사", 15, 10, 200, 50, skills[1], skills[2]);
+            jobs[2] = new Job("마법사", 10, 10, 150, 100, skills[3], skills[4]);
         }
 
+        private static void PlayerSetting()
+        {
+            Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine("캐릭터의 이름을 입력해주세요.");
+            Console.WriteLine("");
+            Console.Write(">> ");
+
+            string Name = Console.ReadLine();
+            Console.WriteLine("");
+
+            Console.WriteLine("캐릭터의 직업을 선택해주세요.");
+            Console.WriteLine("");
+            Console.WriteLine("1. 전사");
+            Console.WriteLine("2. 마법사");
+
+            switch (CheckInput(1, 2))
+            {
+                case 1:
+                    player = new Player($"{Name}", 1, jobs[1]);
+                    break;
+                case 2:
+                    player = new Player($"{Name}", 1, jobs[2]);
+                    break;
+            }
+        }
+
+
+        // Menu
         private static void StartMenu()
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine("◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽");
+            Console.WriteLine("■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Console.WriteLine("");
             Console.WriteLine("다이어트 던전에 오신 여러분 환영합니다.");
             Console.WriteLine("");
             Console.WriteLine("이제 전투를 시작할 수 있습니다.");
             Console.WriteLine("");
-            Console.WriteLine("◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽◾◽");
+            Console.WriteLine("■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■");
             Console.WriteLine("");
 
             Console.WriteLine("< 다이어트 마을 >\n");
             Console.WriteLine("[활동 선택]\n");
 
             Console.WriteLine("1. 상태 보기");
-            Console.WriteLine("2. 전투 시작");
+            Console.WriteLine("2. 던전 입장");
             Console.WriteLine("3. 게임 종료");
-            Console.WriteLine("");
 
-            switch (CheckValidInput(1, 3))
+            switch (CheckInput(1, 3))
             {
                 case 1:
                     StatusMenu();
                     break;
                 case 2:
+                    BattleInfo("[다이어트 던전]");
                     BattleStart();
                     break;
                 case 3:
+                    Console.WriteLine("■ 게임을 종료합니다 ■");
                     return;
             }
         }
@@ -113,16 +152,18 @@ namespace DietDungeon
             ShowHighlightedText("상태 보기");
             Console.WriteLine("캐릭터의 정보가 표시됩니다.");
             Console.WriteLine("");
-            PrintTextwithHighlights("Lv. ", player.Level.ToString("00")); // 01, 07
-            Console.WriteLine("{0} ( {1} )", player.Name, player.Job);
+            PrintTextwithHighlights("Lv. ", player.Level.ToString("00")); // 01, 07            
+            PrintTextwithHighlights("이름 : ", player.Name);
+            PrintTextwithHighlights("직업 : ", player.job.JobName);
             PrintTextwithHighlights("공격력 : ", player.Atk.ToString());
             PrintTextwithHighlights("방어력 : ", player.Def.ToString());
-            PrintTextwithHighlights("체력 : ", player.Hp.ToString());
-            PrintTextwithHighlights("Gold : ", player.Gold.ToString(), " G");
+            PrintTextwithHighlights("HP : ", player.Hp.ToString());
+            PrintTextwithHighlights("MP : ", player.Mp.ToString());
+            PrintTextwithHighlights("Gold : ", player.gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
-            Console.WriteLine("");
-            switch (CheckValidInput(0, 0))
+
+            switch (CheckInput(0, 0))
             {
                 case 0:
                     StartMenu();
@@ -130,273 +171,231 @@ namespace DietDungeon
             }
         }
 
-        private static void BattleStart()
+
+        // Info
+        private static void BattleInfo(string dungeonName)
         {
             Console.Clear();
 
             Console.WriteLine("");
-            ShowHighlightedText(" Battle!!");
+            ShowHighlightedText($" {dungeonName}");
             Console.WriteLine("");
+        }
 
+        private static void PlayerInfo()
+        {
+            Console.WriteLine();
+            Console.WriteLine(" [내 정보]");
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.job.JobName})");
+            Console.WriteLine(" HP {0}/{1}", player.Hp, player.job.Hp);
+        }
 
-            int count = new Random().Next(1, 5);
-            /*int[] attacktargets = new int[4];*/ //박창현추가
-            int[] attacktargets = new int[4];
-            spawnMonsters = new Monster[count];
-
+        private static void MonsterInfo(int count, bool battle = true)
+        {
             Console.WriteLine(" [몬스터 정보]");
-            for (int i = 0; i < count; ++i)
-            {
-                int idx = new Random().Next(0, 3);
-                monsters[idx].MonsterDescription();
-                spawnMonsters[i] = new Monster(monsters[idx]);
-
-                attacktargets[i] = idx; //박창현추가
-            }
-
-            Console.WriteLine();
-            Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
-
-            Console.WriteLine("");
-            Console.WriteLine("1. 공격");
-            Console.WriteLine("");
-
-            switch (CheckValidInput(1, 1))
-            {
-                case 1:
-                    Attack(count, spawnMonsters); //박창현추가
-                    break;
-            }
-
-        }
-
-
-
-        private static void Attack(int count, Monster[] monster) //박창현추가
-        {
-            Console.Clear();
-
-            Console.WriteLine("");
-            ShowHighlightedText(" Battle!!");
-            Console.WriteLine("");
-
-            for (int i = 0; i < count; i++) //
-            {
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.Write($"{i + 1}");
-                Console.ResetColor();
-                spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
-            }
-            Console.WriteLine();
-            Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
-
-            Console.WriteLine("");
-            Console.WriteLine("1. 공격");
-            Console.WriteLine("");
-            switch (CheckValidInput(1, 1))
-            {
-                case 1:
-                    AttackPhase(count, spawnMonsters); 
-                    break;
-            }
-        }
-
-        static void AttackPhase(int count, Monster[] monster) //박창현 추가
-        {
-            Console.Clear();
-
-            Console.WriteLine("");
-            ShowHighlightedText(" Battle!!");
-            Console.WriteLine("");
 
             for (int i = 0; i < count; i++)
             {
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.Write($" {i + 1}");
-                Console.ResetColor();
+                if (battle == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write($" {i + 1}");
+                    Console.ResetColor();
+                }
                 spawnMonsters[i].MonsterDescription();
             }
-            Console.WriteLine();
+        }
 
-            Console.WriteLine("0. 취소");
-            Console.WriteLine();
 
-            Console.WriteLine("대상을 선택해주세요.");
-            Console.Write(">> ");
+        // Battle
+        private static void BattleStart()
+        {
+            // Monster Setting
+            int count = new Random().Next(1, 5);
+            spawnMonsters = new Monster[count];
 
-            int CheckValue = CheckValidInput(0, count);
+            for (int i = 0; i < count; ++i)
+            {
+                int idx = new Random().Next(0, 3);
+                spawnMonsters[i] = new Monster(monsters[idx]);
+            }
+
+            MonsterInfo(count, false);
+
+            PlayerInfo();
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("1. 전투 시작");
+
+            switch (CheckInput(0, 1))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+                case 1:
+                    BattleInfo("Battle!!");
+                    PlayerAttack(count, spawnMonsters);
+                    break;
+            }
+
+        }
+
+        private static void PlayerAttack(int count, Monster[] monster)
+        {
+            MonsterInfo(count);
+
+            PlayerInfo();
+
+            Console.WriteLine("");
+            Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
+
+
+            int CheckValue = CheckInput(0, count);
 
             switch (CheckValue)
             {
-                case 0:
-                    Attack(count, spawnMonsters);
-                    break;
                 case 1:
                 case 2:
                 case 3:
                 case 4:
                     if (spawnMonsters[CheckValue - 1].Hp <= 0)
                     {
-                        Console.WriteLine("이미 죽은 몬스터 입니다");
-                        _ = (count, spawnMonsters);
+                        Console.WriteLine("이미 죽은 몬스터 입니다.");
+                        Console.WriteLine("다시 입력해주세요.");
+                        Console.ReadKey();
+                        BattleInfo("Battle!!");
+                        PlayerAttack(count, spawnMonsters);
+                        break;
                     }
-                    player.Attack(spawnMonsters[CheckValue - 1]);
-                    break;
+                    else
+                    {
+                        player.Attack(spawnMonsters[CheckValue - 1]);
+                        break;
+                    }
             }
-            
-            Console.WriteLine("1. 다음턴");
-            Console.WriteLine();
 
-            switch (CheckValidInput(1, 1))
+            Console.WriteLine("1. 다음턴");
+
+            switch (CheckInput(1, 1))
             {
                 case 1:
-                    EnemyPhase(count, spawnMonsters);
+                    BattleInfo("Battle!!");
+                    MonsterAttack(count, spawnMonsters);
                     break;
             }
-
-            //Console.WriteLine("대상을 선택해주세요.");
-            //Console.Write(">> ");
-            //var command = Convert.ToInt32(Console.ReadLine());
-            //if (command != 0)
-            //{
-            //    var attackEnemyIndex = command - 1;
-            //    if (attackEnemyIndex < 0 || 
-            //         attackEnemyIndex >= count ||
-            //         monsters[attacktargets[attackEnemyIndex]].Hp <= 0)
-            //        
-            //    {
-            //        Console.WriteLine("잘못된 입력입니다.");
-            //    }
-            //    else
-            //    {
-            //        player.Attack(monsters[attacktargets[attackEnemyIndex]]);
-            //    }
-            //
-            //}
         }
 
-        private static void EnemyPhase(int count, Monster[] monster)
+        private static void MonsterAttack(int count, Monster[] monster)
         {
-            Console.Clear();
-
-            bool result = spawnMonsters.All(x => x.Hp == 0);
-
-            Console.WriteLine("");
-            ShowHighlightedText(" Battle!!");
-            Console.WriteLine("");
+            bool result = monster.All(x => x.Hp == 0);
 
             for (int i = 0; i < count; i++)
             {
-                if(result)
+                if (result)
                 {
                     Victory(count);
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    Console.Write($" {i + 1}");
-                    Console.ResetColor();
-                    spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
-
-                    Console.WriteLine();
-                    Console.WriteLine(player.Hp);
-                    Random rand = new Random();
-
-                    if (spawnMonsters[i].Hp <= 0)
+                    if (monster[i].Hp > 0)
                     {
-                        Console.WriteLine("이미 죽은 몬스터 입니다");
-                        _ = (count, spawnMonsters);
-                        continue;
+                        monster[i].Attack(player);
+                        if (player.Hp <= 0)
+                        {
+                            Lose();
+                        }
+
                     }
-                    spawnMonsters[i].Attack(player);
                 }
-                
             }
 
-            if(player.Hp <= 0)
+            Console.WriteLine("1. 다음턴");
+
+            switch (CheckInput(1, 1))
             {
-                Lose();
-            }
-
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
-            Console.WriteLine("대상을 선택해주세요.");
-            Console.WriteLine(">>");
-
-            int CheckValue = CheckValidInput(0, count);
-
-            switch (CheckValue)
-            {
-                case 0:
-                    AttackPhase(count, spawnMonsters);
+                case 1:
+                    BattleInfo("Battle!!");
+                    PlayerAttack(count, spawnMonsters);
                     break;
-            }   
+            }
         }
 
+
+        // Win / Lose
         private static void Victory(int count)
         {
-            Console.Clear();
-            ShowHighlightedText("Battle!! - Result");
-            Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Victory");
-            Console.ResetColor();
+            BattleInfo("Battle!! - Result");
+
+            ShowHighlightedText(" Victory", ConsoleColor.Green);
 
             Console.WriteLine("");
             Console.WriteLine("던전에서 몬스터 {0}마리를 잡았습니다.", count);
 
-            Console.WriteLine("");
-            Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
+            PlayerInfo();
+
+            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
-            Console.WriteLine();
 
-            switch (CheckValidInput(1, 1))
+            switch (CheckInput(1, 1))
             {
                 case 1:
-                    StartMenu(); // 전투가 끝나면 startmenu로 이동
+                    StartMenu();
                     break;
             }
         }
 
         private static void Lose()
         {
-            Console.Clear();
-            ShowHighlightedText("Battle!! - Result");
-            Console.WriteLine("");
+            BattleInfo("Battle!! - Result");
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("You Lose");
-            Console.ResetColor();
-            Console.WriteLine("");
+            ShowHighlightedText(" You Lose", ConsoleColor.Red);
 
-            Console.WriteLine();
-            Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
+            PlayerInfo();
+
+            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
             Console.WriteLine();
 
-            switch (CheckValidInput(1, 1))
+            switch (CheckInput(1, 1))
             {
                 case 1:
-                    StartMenu();// 전투가 끝나면 startmenu로 이동
+                    StartMenu();
                     break;
             }
         }
 
 
+        ////////////Input Check////////////
+        private static int CheckInput(int min, int max)
+        {
+            while (true)
+            {
+                Console.WriteLine();
+                Console.Write(">> ");
+                string input = Console.ReadLine();
 
+                bool parseSuccess = int.TryParse(input, out var ret);
+                if (parseSuccess)
+                {
+                    if (min <= ret && ret <= max)
+                    {
+                        Console.WriteLine("");
+                        return ret;
+                    }
+                }
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("잘못된 입력입니다.");
+                Console.ResetColor();
+            }
+
+        }
+
+        //Text Color
         private static void PrintTextwithHighlights(string s1, string s2, string s3 = "")
         {
             Console.Write(s1);
@@ -406,41 +405,11 @@ namespace DietDungeon
             Console.WriteLine(s3);
         }
 
-        private static void ShowHighlightedText(string text)
+        private static void ShowHighlightedText(string text, ConsoleColor color = ConsoleColor.Yellow)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(text);
             Console.ResetColor();
         }
-
-        private static int CheckValidInput(int min, int max)
-        {
-            // 아래 두 가지 상황은 비정상 -> 재입력 수행
-            // (1) 숫자가 아닌 입력을 받은 경우
-            // (2) 숫자가 최소값 ~ 최대값의 범위를 넘는 경우
-
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            while (true)
-            {
-                Console.Write(">> ");
-                string input = Console.ReadLine();
-
-                bool parseSuccess = int.TryParse(input, out var ret);
-                if (parseSuccess)
-                {
-                    if (min <= ret && ret <= max)
-                        return ret;
-                }
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("잘못된 입력입니다.");
-                Console.ResetColor();
-            }
-
-        }
-
-
-
-
     }
 }
