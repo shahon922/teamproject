@@ -90,12 +90,13 @@ namespace DietDungeon
 
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 전투 시작");
-            Console.WriteLine("3. 게임 종료");
+            Console.WriteLine("3. 휴식 하기");
+            Console.WriteLine("4. 게임 종료");
             Console.WriteLine("");
 
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckValidInput(1, 3))
+            switch (CheckValidInput(1, 4))
             {
                 case 1:
                     StatusMenu();
@@ -104,6 +105,9 @@ namespace DietDungeon
                     BattleStart();
                     break;
                 case 3:
+                    Rest();
+                    break;
+                case 4:
                     return;
             }
         }
@@ -134,7 +138,46 @@ namespace DietDungeon
             }
         }
 
-        private static void BattleStart()
+       private static void Rest()
+        {
+            int minusGold = 500;
+            int maxHp = 100;
+
+            if(player.Hp == maxHp)
+            {
+                Console.WriteLine("체력이 이미 가득 차 있습니다.");
+            }
+            else
+            {
+                if(player.Gold >= minusGold)
+                {
+                    Console.WriteLine("체력을 회복했습니다.");
+                    player.Hp = maxHp;
+                    player.Gold -= minusGold;
+
+                }
+                else
+                {
+                    Console.WriteLine("Gold가 부족합니다.");
+                }
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckValidInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
+  
+
+
+    private static void BattleStart()
         {
             Console.Clear();
 
@@ -365,6 +408,12 @@ namespace DietDungeon
             Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
 
             Console.WriteLine("");
+            Console.WriteLine("[획득 아이템]");
+            int plusGold = (count * 500);
+            Console.WriteLine("{0} Gold", plusGold);
+            player.Gold += plusGold;
+
+            Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
             Console.WriteLine();
 
@@ -449,9 +498,6 @@ namespace DietDungeon
             }
 
         }
-
-
-
 
     }
 }
