@@ -26,7 +26,7 @@ namespace DietDungeon
 
         public void UpgradeJob(Job job)
         {
-            this. Job = job;
+            this.Job = job;
             Hp = job.Hp;
             Atk = job.Atk;
             Def = job.Def;
