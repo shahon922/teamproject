@@ -361,7 +361,7 @@ namespace DietDungeon
                     {
                         if (spawnMonsters.All(x => x.Hp == 0))
                         {
-                            Victory(count);
+                            Victory();
                             player.Mp -= player.Job.skill2.SkillMp;
                             return;
                         }                            
@@ -396,7 +396,7 @@ namespace DietDungeon
 
             if (result)
             {
-                Victory(count);
+                Victory();
                 return;
             }
             if (player.Hp <= 0)
@@ -425,7 +425,7 @@ namespace DietDungeon
         private static void Rest()
         {
             int minusGold = 500;
-            int maxHp = 100;
+            int maxHp = player.Job.Hp;
 
             if (player.Hp == maxHp)
             {
@@ -461,7 +461,7 @@ namespace DietDungeon
 
 
         // Win / Lose
-        private static void Victory(int count)
+        private static void Victory()
         {
             BattleInfo("Battle!! - Result");
 
