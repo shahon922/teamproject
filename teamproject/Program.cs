@@ -283,29 +283,44 @@ namespace DietDungeon
         {
             Console.Clear();
 
+            bool result = spawnMonsters.All(x => x.Hp == 0);
+
             Console.WriteLine("");
             ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
 
             for (int i = 0; i < count; i++)
             {
-
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.Write($" {i + 1}");
-                Console.ResetColor();
-                spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
-
-                Console.WriteLine();
-                Console.WriteLine(player.Hp);
-                Random rand = new Random();
-
-                if (spawnMonsters[i].Hp <= 0)
+                if(result)
                 {
-                    Console.WriteLine("이미 죽은 몬스터 입니다");
-                    _ = (count, spawnMonsters);
+                    Victory(count);
                 }
-                spawnMonsters[i].Attack(player);
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.Write($" {i + 1}");
+                    Console.ResetColor();
+                    spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
+
+                    Console.WriteLine();
+                    Console.WriteLine(player.Hp);
+                    Random rand = new Random();
+
+                    if (spawnMonsters[i].Hp <= 0)
+                    {
+                        Console.WriteLine("이미 죽은 몬스터 입니다");
+                        _ = (count, spawnMonsters);
+                    }
+                    spawnMonsters[i].Attack(player);
+                }
+                
             }
+
+            if(player.Hp <= 0)
+            {
+                Lose();
+            }
+
             Console.WriteLine("");
             Console.WriteLine("0. 다음");
             Console.WriteLine("");
@@ -320,6 +335,63 @@ namespace DietDungeon
                     AttackPhase(count, spawnMonsters);
                     break;
             }   
+        }
+
+        private static void Victory(int count)
+        {
+            Console.Clear();
+            ShowHighlightedText("Battle!! - Result");
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Victory");
+            Console.ResetColor();
+
+            Console.WriteLine("");
+            Console.WriteLine("던전에서 몬스터 {0}마리를 잡았습니다.", count);
+
+            Console.WriteLine("");
+            Console.WriteLine(" [내 정보]");
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
+
+            Console.WriteLine("");
+            Console.WriteLine("1. 시작화면");
+            Console.WriteLine();
+
+            switch (CheckValidInput(1, 1))
+            {
+                case 1:
+                    StartMenu(); // 전투가 끝나면 startmenu로 이동
+                    break;
+            }
+        }
+
+        private static void Lose()
+        {
+            Console.Clear();
+            ShowHighlightedText("Battle!! - Result");
+            Console.WriteLine("");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("You Lose");
+            Console.ResetColor();
+            Console.WriteLine("");
+
+            Console.WriteLine();
+            Console.WriteLine(" [내 정보]");
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
+
+            Console.WriteLine("");
+            Console.WriteLine("1. 시작화면");
+            Console.WriteLine();
+
+            switch (CheckValidInput(1, 1))
+            {
+                case 1:
+                    StartMenu();// 전투가 끝나면 startmenu로 이동
+                    break;
+            }
         }
 
 
