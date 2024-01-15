@@ -9,24 +9,24 @@ namespace DietDungeon
 {
     public class Player : Unit
     {
-        public Job job { get; set; }
-        public int gold { get; set; }
+        public Job Job { get; set; }
+        public int Gold { get; set; }
 
         public Player(string name, int level, Job job)
         {
             Name = name;
             Level = level;
-            this.job = job;
+            this.Job = job;
             Hp = job.Hp;
             Atk = job.Atk;
             Def = job.Def;
             Mp = job.Mp;
-            gold = 1500;
+            Gold = 1500;
         }
 
         public void UpgradeJob(Job job)
         {
-            this.job = job;
+            this. Job = job;
             Hp = job.Hp;
             Atk = job.Atk;
             Def = job.Def;

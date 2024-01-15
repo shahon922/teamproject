@@ -175,12 +175,12 @@ namespace DietDungeon
             Console.WriteLine("");
             PrintTextwithHighlights("Lv. ", player.Level.ToString("00")); // 01, 07            
             PrintTextwithHighlights("이름 : ", player.Name);
-            PrintTextwithHighlights("직업 : ", player.job.JobName);
+            PrintTextwithHighlights("직업 : ", player.Job.JobName);
             PrintTextwithHighlights("공격력 : ", player.Atk.ToString());
             PrintTextwithHighlights("방어력 : ", player.Def.ToString());
             PrintTextwithHighlights("HP : ", player.Hp.ToString());
             PrintTextwithHighlights("MP : ", player.Mp.ToString());
-            PrintTextwithHighlights("Gold : ", player.gold.ToString(), " G");
+            PrintTextwithHighlights("Gold : ", player.Gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
 <<<<<<< HEAD
@@ -257,9 +257,9 @@ namespace DietDungeon
         {
             Console.WriteLine();
             Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.job.JobName})");
-            Console.WriteLine(" HP {0}/{1}", player.Hp, player.job.Hp);
-            Console.WriteLine(" MP {0}/{1}", player.Mp, player.job.Mp);
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job.JobName})");
+            Console.WriteLine(" HP {0}/{1}", player.Hp, player.Job.Hp);
+            Console.WriteLine(" MP {0}/{1}", player.Mp, player.Job.Mp);
         }
 
         private static void MonsterInfo(bool battle = true)
@@ -436,8 +436,8 @@ namespace DietDungeon
                     }
                     else if (skill == true) //스킬공격
                     {
-                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.job.skill1);
-                        player.Mp -= player.job.skill1.SkillMp;
+                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.Job.skill1);
+                        player.Mp -= player.Job.skill1.SkillMp;
                         break;
                     }
                     else
