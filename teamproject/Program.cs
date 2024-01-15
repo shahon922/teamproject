@@ -130,10 +130,14 @@ namespace DietDungeon
             Console.WriteLine("[활동 선택]\n");
 
             Console.WriteLine("1. 상태 보기");
-            Console.WriteLine("2. 던전 입장");
-            Console.WriteLine("3. 게임 종료");
+            Console.WriteLine("2. 전투 시작");
+            Console.WriteLine("3. 휴식 하기");
+            Console.WriteLine("4. 게임 종료");
+            Console.WriteLine("");
 
-            switch (CheckInput(1, 3))
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckValidInput(1, 4))
             {
                 case 1:
                     StatusMenu();
@@ -143,8 +147,10 @@ namespace DietDungeon
                     BattleStart();
                     break;
                 case 3:
-                    Console.WriteLine("■ 게임을 종료합니다 ■");
+                    Rest();
                     break;
+                case 4:
+                    return;
             }
         }
 
@@ -165,8 +171,10 @@ namespace DietDungeon
             PrintTextwithHighlights("Gold : ", player.gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckInput(0, 0))
+            switch (CheckValidInput(0, 0))
             {
                 case 0:
                     StartMenu();
@@ -174,9 +182,46 @@ namespace DietDungeon
             }
         }
 
+       private static void Rest()
+        {
+            int minusGold = 500;
+            int maxHp = 100;
 
-        // Info
-        private static void BattleInfo(string dungeonName)
+            if(player.Hp == maxHp)
+            {
+                Console.WriteLine("체력이 이미 가득 차 있습니다.");
+            }
+            else
+            {
+                if(player.Gold >= minusGold)
+                {
+                    Console.WriteLine("체력을 회복했습니다.");
+                    player.Hp = maxHp;
+                    player.Gold -= minusGold;
+
+                }
+                else
+                {
+                    Console.WriteLine("Gold가 부족합니다.");
+                }
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckValidInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
+  
+
+
+    private static void BattleStart()
         {
             Console.Clear();
 
@@ -229,8 +274,9 @@ namespace DietDungeon
             PlayerInfo();
 
             Console.WriteLine("");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine("1. 전투 시작");
+            Console.WriteLine("1. 공격");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckInput(0, 1))
             {
@@ -257,6 +303,24 @@ namespace DietDungeon
 
             switch (CheckInput(1, 2))
             {
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.Write($"{i + 1}");
+                Console.ResetColor();
+                spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
+            }
+            Console.WriteLine();
+            Console.WriteLine(" [내 정보]");
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine(" HP {0}/100", player.Hp.ToString());//100부분 {1}로 바꿔서 써도 될거같아요
+
+            Console.WriteLine("");
+            Console.WriteLine("1. 공격");
+            Console.WriteLine("");
+
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckValidInput(1, 1))
+            {
                 case 1:
                     PlayerAttack();
                     break;
@@ -271,6 +335,23 @@ namespace DietDungeon
             Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
 
             int CheckValue = CheckInput(0, count);
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.Write($" {i + 1}");
+                Console.ResetColor();
+                spawnMonsters[i].MonsterDescription();
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("0. 취소");
+            Console.WriteLine();
+
+            Console.WriteLine("대상을 선택해주세요.");
+            //Console.Write(">> ");
+
+            int CheckValue = CheckValidInput(0, count);
 
             switch (CheckValue)
             {
@@ -302,7 +383,8 @@ namespace DietDungeon
 
             Console.WriteLine("1. 다음턴");
 
-            switch (CheckInput(1, 1))
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            switch (CheckValidInput(1, 1))
             {
                 case 1:
                     BattleInfo("Battle!!");
@@ -399,7 +481,13 @@ namespace DietDungeon
                     spawnMonsters[i].Attack(player);
             }
 
-            Console.WriteLine("1. 다음턴");
+            Console.WriteLine("");
+            Console.WriteLine("0. 다음");
+            Console.WriteLine("");
+            Console.WriteLine("대상을 선택해주세요.");
+            //Console.WriteLine(">>");
+
+            int CheckValue = CheckValidInput(0, count);
 
             switch (CheckInput(1, 1))
             {
@@ -426,9 +514,16 @@ namespace DietDungeon
             player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
+            Console.WriteLine("[획득 아이템]");
+            int plusGold = (count * 500);
+            Console.WriteLine("{0} Gold", plusGold);
+            player.Gold += plusGold;
+
+            Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
 
-            switch (CheckInput(1, 1))
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            switch (CheckValidInput(1, 1))
             {
                 case 1:
                     StartMenu();
@@ -450,7 +545,8 @@ namespace DietDungeon
             Console.WriteLine("1. 시작화면");
             Console.WriteLine();
 
-            switch (CheckInput(1, 1))
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            switch (CheckValidInput(1, 1))
             {
                 case 1:
                     StartMenu();
@@ -462,6 +558,12 @@ namespace DietDungeon
         //Input Check
         private static int CheckInput(int min, int max)
         {
+            // 아래 두 가지 상황은 비정상 -> 재입력 수행
+            // (1) 숫자가 아닌 입력을 받은 경우
+            // (2) 숫자가 최소값 ~ 최대값의 범위를 넘는 경우
+
+            //Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             while (true)
             {
                 Console.WriteLine();
@@ -484,21 +586,5 @@ namespace DietDungeon
 
         }
 
-        //Text Color
-        private static void PrintTextwithHighlights(string s1, string s2, string s3 = "", ConsoleColor color = ConsoleColor.Green)
-        {
-            Console.Write(s1);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(s2);
-            Console.ResetColor();
-            Console.WriteLine(s3);
-        }
-
-        private static void ShowHighlightedText(string text, ConsoleColor color = ConsoleColor.Yellow)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(text);
-            Console.ResetColor();
-        }
     }
 }
