@@ -157,12 +157,12 @@ namespace DietDungeon
             Console.WriteLine("");
             PrintTextwithHighlights("Lv. ", player.Level.ToString("00")); // 01, 07            
             PrintTextwithHighlights("이름 : ", player.Name);
-            PrintTextwithHighlights("직업 : ", player.job.JobName);
+            PrintTextwithHighlights("직업 : ", player.Job.JobName);
             PrintTextwithHighlights("공격력 : ", player.Atk.ToString());
             PrintTextwithHighlights("방어력 : ", player.Def.ToString());
             PrintTextwithHighlights("HP : ", player.Hp.ToString());
             PrintTextwithHighlights("MP : ", player.Mp.ToString());
-            PrintTextwithHighlights("Gold : ", player.gold.ToString(), " G");
+            PrintTextwithHighlights("Gold : ", player.Gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
 
@@ -189,9 +189,9 @@ namespace DietDungeon
         {
             Console.WriteLine();
             Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.job.JobName})");
-            Console.WriteLine(" HP {0}/{1}", player.Hp, player.job.Hp);
-            Console.WriteLine(" MP {0}/{1}", player.Mp, player.job.Mp);
+            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job.JobName})");
+            Console.WriteLine(" HP {0}/{1}", player.Hp, player.Job.Hp);
+            Console.WriteLine(" MP {0}/{1}", player.Mp, player.Job.Mp);
         }
 
         private static void MonsterInfo(bool battle = true)
@@ -289,8 +289,8 @@ namespace DietDungeon
                     }
                     else if (skill == true) //스킬공격
                     {
-                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.job.skill1);
-                        player.Mp -= player.job.skill1.SkillMp;
+                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.Job.skill1);
+                        player.Mp -= player.Job.skill1.SkillMp;
                         break;
                     }
                     else
@@ -326,13 +326,13 @@ namespace DietDungeon
                     PlayerAttack(true);
                     return;
                 case 2:
-                    rand = new int[player.job.skill2.TargetCount];
-                    for (int i = 0; i < player.job.skill2.TargetCount; i++)
+                    rand = new int[player.Job.skill2.TargetCount];
+                    for (int i = 0; i < player.Job.skill2.TargetCount; i++)
                     {
                         if (spawnMonsters.All(x => x.Hp == 0))
                         {
                             Victory(count);
-                            player.Mp -= player.job.skill2.SkillMp;
+                            player.Mp -= player.Job.skill2.SkillMp;
                             return;
                         }                            
                         else
@@ -342,10 +342,10 @@ namespace DietDungeon
                             {
                                 rand[i] = new Random().Next(0, count);
                             }                       
-                            player.SkillAttack(spawnMonsters[rand[i]], player.job.skill2);                            
+                            player.SkillAttack(spawnMonsters[rand[i]], player.Job.skill2);                            
                         }
                     }
-                    player.Mp -= player.job.skill2.SkillMp;
+                    player.Mp -= player.Job.skill2.SkillMp;
                     break;
             }
 
@@ -368,14 +368,14 @@ namespace DietDungeon
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("1");
             Console.ResetColor();
-            PrintTextwithHighlights($". {player.job.skill1.SkillName} - MP ", player.job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.job.skill1.SkillDescription}");
+            PrintTextwithHighlights($". {player.Job.skill1.SkillName} - MP ", player.Job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.skill1.SkillDescription}");
 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("2");
             Console.ResetColor();
-            PrintTextwithHighlights($". {player.job.skill2.SkillName} - MP ", player.job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.job.skill2.SkillDescription}");
+            PrintTextwithHighlights($". {player.Job.skill2.SkillName} - MP ", player.Job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.skill2.SkillDescription}");
         }
 
 
@@ -423,7 +423,7 @@ namespace DietDungeon
 
             PlayerInfo();
 
-            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
+            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
@@ -444,7 +444,7 @@ namespace DietDungeon
                         
             PlayerInfo();
 
-            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
+            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
