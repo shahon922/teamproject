@@ -310,6 +310,7 @@ namespace DietDungeon
                     {
                         Console.WriteLine("이미 죽은 몬스터 입니다");
                         _ = (count, spawnMonsters);
+                        continue;
                     }
                     spawnMonsters[i].Attack(player);
                 }
