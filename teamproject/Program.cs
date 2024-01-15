@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Reflection.Metadata.Ecma335;
@@ -131,9 +132,15 @@ namespace DietDungeon
 
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 던전 입장");
-            Console.WriteLine("3. 게임 종료");
+            Console.WriteLine("3. 휴식 하기");
+            Console.WriteLine("4. 게임 종료");
+            Console.WriteLine("");
 
-            switch (CheckInput(1, 3))
+            //
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            //
+
+            switch (CheckInput(1, 4))
             {
                 case 1:
                     StatusMenu();
@@ -143,8 +150,11 @@ namespace DietDungeon
                     BattleStart();
                     break;
                 case 3:
-                    Console.WriteLine("■ 게임을 종료합니다 ■");
+                    Rest();
                     break;
+                case 4:
+                    Console.WriteLine("■ 게임을 종료합니다 ■");
+                    return;
             }
         }
 
@@ -165,6 +175,11 @@ namespace DietDungeon
             PrintTextwithHighlights("Gold : ", player.Gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
+
+            //
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            //
 
             switch (CheckInput(0, 0))
             {
@@ -208,6 +223,21 @@ namespace DietDungeon
                 }
                 spawnMonsters[i].MonsterDescription();
             }
+        }
+
+        public static void SkillInfo()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("1");
+            Console.ResetColor();
+            PrintTextwithHighlights($". {player.Job.skill1.SkillName} - MP ", player.Job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.skill1.SkillDescription}");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("2");
+            Console.ResetColor();
+            PrintTextwithHighlights($". {player.Job.skill2.SkillName} - MP ", player.Job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.skill2.SkillDescription}");
         }
 
 
@@ -360,25 +390,6 @@ namespace DietDungeon
             }
         }
 
-       
-
-
-        public static void SkillInfo()
-        {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("1");
-            Console.ResetColor();
-            PrintTextwithHighlights($". {player.Job.skill1.SkillName} - MP ", player.Job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.Job.skill1.SkillDescription}");
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("2");
-            Console.ResetColor();
-            PrintTextwithHighlights($". {player.Job.skill2.SkillName} - MP ", player.Job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.Job.skill2.SkillDescription}");
-        }
-
-
         private static void MonsterAttack()
         {
             bool result = spawnMonsters.All(x => x.Hp == 0);
@@ -410,6 +421,44 @@ namespace DietDungeon
             }
         }
 
+        // Rest
+        private static void Rest()
+        {
+            int minusGold = 500;
+            int maxHp = 100;
+
+            if (player.Hp == maxHp)
+            {
+                Console.WriteLine("체력이 이미 가득 차 있습니다.");
+            }
+            else
+            {
+                if (player.Gold >= minusGold)
+                {
+                    Console.WriteLine("체력을 회복했습니다.");
+                    player.Hp = maxHp;
+                    player.Gold -= minusGold;
+
+                }
+                else
+                {
+                    Console.WriteLine("Gold가 부족합니다.");
+                }
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
+
 
         // Win / Lose
         private static void Victory(int count)
@@ -420,11 +469,18 @@ namespace DietDungeon
 
             Console.WriteLine("");
             Console.WriteLine("던전에서 몬스터 {0}마리를 잡았습니다.", count);
-
+           
             PlayerInfo();
 
-            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
+            int plusGold = (count * 500);
 
+            Console.WriteLine("");
+            Console.WriteLine("[획득 아이템]");
+            Console.WriteLine("{0} Gold", plusGold);
+
+            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
+            player.Gold += plusGold;
+            
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
 
