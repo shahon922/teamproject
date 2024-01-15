@@ -293,31 +293,27 @@ namespace DietDungeon
                 Console.Write($" {i + 1}");
                 Console.ResetColor();
                 spawnMonsters[i].MonsterDescription(); //랜덤으로 소환된 몬스터 개체수
-            }
+
                 Console.WriteLine();
                 Console.WriteLine(player.Hp);
                 Random rand = new Random();
-                spawnMonsters[rand.Next(1, count) - 1].Attack(player);
-
+                spawnMonsters[i].Attack(player);
+                 
+            }
                 Console.WriteLine("");
                 Console.WriteLine("0. 다음");
                 Console.WriteLine("");
                 Console.WriteLine("대상을 선택해주세요.");
                 Console.WriteLine(">>");
             
-            switch (CheckValidInput(0, 0))
-            {
-                case 0:
-                    EnemyPhase(count, spawnMonsters); 
-                    break;
-            }
-            switch (CheckValidInput(1, 1))
-            {
-                case 1:
-                    AttackPhase(count, spawnMonsters);
-                    break;
-            }
-
+                int CheckValue = CheckValidInput(0, count);
+            
+                switch (CheckValue)
+                {
+                    case 0:
+                        AttackPhase(count, spawnMonsters);
+                        break;
+                }
         }
 
 
