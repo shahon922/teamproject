@@ -13,9 +13,9 @@ namespace DietDungeon
     {
         static Player player;
         static Job[] jobs;
+        static Skill[] skills;
         static Monster[] monsters;
         static Monster[] spawnMonsters;
-        static Skill[] skills;
 
         static void Main(string[] args)
         {
@@ -61,10 +61,11 @@ namespace DietDungeon
         private static void GameDataSetting()
         {
             //Monster
-            monsters = new Monster[3];
+            monsters = new Monster[4];
             monsters[0] = new Monster("탕후루", 2, 15, 5);
             monsters[1] = new Monster("떡볶이", 3, 25, 9);
             monsters[2] = new Monster("대창", 5, 20, 8);
+            monsters[3] = new Monster("콜라", 1, 10, 7);
 
             //Skill
             skills = new Skill[5];
@@ -217,7 +218,7 @@ namespace DietDungeon
 
             for (int i = 0; i < count; ++i)
             {
-                int idx = new Random().Next(0, 3);
+                int idx = new Random().Next(0, 4);
                 spawnMonsters[i] = new Monster(monsters[idx]);
             }
 
@@ -247,6 +248,20 @@ namespace DietDungeon
             MonsterInfo(count);
 
             PlayerInfo();
+
+            //Console.WriteLine("");
+            //Console.WriteLine("1. 공격");
+            //Console.WriteLine("2. 스킬");
+            //
+            //switch (CheckInput(1, 2))
+            //{
+            //    case 1:
+            //        Attack();
+            //        break;
+            //    case 2:
+            //        SkillAttack();
+            //        break;
+            //}
 
             Console.WriteLine("");
             Console.WriteLine("■ 공격할 대상의 번호를 입력해주세요 ■");
@@ -354,7 +369,7 @@ namespace DietDungeon
             BattleInfo("Battle!! - Result");
 
             ShowHighlightedText(" You Lose", ConsoleColor.Red);
-
+                        
             PlayerInfo();
 
             player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
