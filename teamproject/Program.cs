@@ -188,6 +188,7 @@ namespace DietDungeon
             Console.WriteLine(" [내 정보]");
             Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.job.JobName})");
             Console.WriteLine(" HP {0}/{1}", player.Hp, player.job.Hp);
+            Console.WriteLine(" MP {0}/{1}", player.Mp, player.job.Mp);
         }
 
         private static void MonsterInfo(int count, bool battle = true)
@@ -270,6 +271,7 @@ namespace DietDungeon
                     }
                     else
                     {
+                        
                         player.Attack(spawnMonsters[CheckValue - 1]);
                         break;
                     }

@@ -12,7 +12,7 @@ namespace teamproject
         public int Atk { get; set; }
         public int Def { get; set; }
         public int Hp { get; set; }
-        public int MP { get; set; } = 0;
+        public int Mp { get; set; }
         public Skill skill1 { get; set; } = null;
         public Skill skill2 { get; set; }
 
@@ -25,7 +25,7 @@ namespace teamproject
             Atk = atk;
             Def = def;
             Hp = hp;
-            MP = mP;
+            Mp = mP;
             this.skill1 = skill1;
             this.skill2 = skill2;
             SkillCount = 2;
@@ -36,15 +36,10 @@ namespace teamproject
             Atk = 5;
             Def = 5;
             Hp = 100;
+            Mp = 0;
             this.skill1 = skill1;
             this.skill2 = skill1;
             SkillCount = 0;
         }
-
-        public void SkillInfo()
-        {
-
-        }
-
     }
 }

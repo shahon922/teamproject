@@ -20,7 +20,7 @@ namespace DietDungeon
             Hp = job.Hp;
             Atk = job.Atk;
             Def = job.Def;
-            Mp = job.MP;
+            Mp = job.Mp;
             gold = 1500;
         }
 
@@ -30,7 +30,7 @@ namespace DietDungeon
             Hp = job.Hp;
             Atk = job.Atk;
             Def = job.Def;
-            Mp = job.MP;
+            Mp = job.Mp;
         }
 
     }
