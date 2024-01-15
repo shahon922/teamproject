@@ -372,7 +372,7 @@ namespace DietDungeon
         }
 
 
-        ////////////Input Check////////////
+        //Input Check
         private static int CheckInput(int min, int max)
         {
             while (true)
