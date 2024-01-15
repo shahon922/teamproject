@@ -287,8 +287,9 @@ namespace DietDungeon
             ShowHighlightedText(" Battle!!");
             Console.WriteLine("");
 
-            for (int i = 0; i < count; ++i)
+            for (int i = 0; i < count; i++)
             {
+
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
                 Console.Write($" {i + 1}");
                 Console.ResetColor();
@@ -297,23 +298,28 @@ namespace DietDungeon
                 Console.WriteLine();
                 Console.WriteLine(player.Hp);
                 Random rand = new Random();
-                spawnMonsters[i].Attack(player);
-                 
-            }
-                Console.WriteLine("");
-                Console.WriteLine("0. 다음");
-                Console.WriteLine("");
-                Console.WriteLine("대상을 선택해주세요.");
-                Console.WriteLine(">>");
-            
-                int CheckValue = CheckValidInput(0, count);
-            
-                switch (CheckValue)
+
+                if (spawnMonsters[i].Hp <= 0)
                 {
-                    case 0:
-                        AttackPhase(count, spawnMonsters);
-                        break;
+                    Console.WriteLine("이미 죽은 몬스터 입니다");
+                    _ = (count, spawnMonsters);
                 }
+                spawnMonsters[i].Attack(player);
+            }
+            Console.WriteLine("");
+            Console.WriteLine("0. 다음");
+            Console.WriteLine("");
+            Console.WriteLine("대상을 선택해주세요.");
+            Console.WriteLine(">>");
+
+            int CheckValue = CheckValidInput(0, count);
+
+            switch (CheckValue)
+            {
+                case 0:
+                    AttackPhase(count, spawnMonsters);
+                    break;
+            }   
         }
 
 

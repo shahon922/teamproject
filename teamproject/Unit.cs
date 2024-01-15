@@ -61,7 +61,7 @@ namespace DietDungeon
                     Console.Write($"Hp {hp} -> ");
                     
                 }
-                else if (target.hp <= 0)
+                else
                 {
                     Console.WriteLine("");
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
@@ -73,7 +73,7 @@ namespace DietDungeon
 
                 if (hp > 0)
                 {
-                    Console.WriteLine($"{hp}");
+                    Console.WriteLine($"{health}");
                 }
                 else
                 {
