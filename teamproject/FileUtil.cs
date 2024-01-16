@@ -5,6 +5,7 @@ namespace DietDungeon
     public static class FileUtil
     {
         private static readonly string playerDataPath = "playerData.json";
+
         // player 객체를 파일에 저장
         public static void SavePlayer(Player player)
         {

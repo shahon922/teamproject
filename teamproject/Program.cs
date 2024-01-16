@@ -21,7 +21,7 @@ namespace DietDungeon
         static Monster[] spawnMonsters;
         static Potion[] potions;
         static int count;
-        static int dungeonFloor = 1;
+        public static int dungeonFloor = 1;
 
         static void Main(string[] args)
         {
@@ -112,6 +112,9 @@ namespace DietDungeon
                         break;
                     case 2:
                         player = FileUtil.LoadPlayer();
+                        dungeonFloor = player.Floor;
+                        potions[0].PotionCount = player.HpPotion;
+                        potions[1].PotionCount = player.MpPotion;
                         break;
                 }
             }
@@ -168,7 +171,7 @@ namespace DietDungeon
 
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 포션 보기");
-            Console.WriteLine("3. 던전 입장");
+            Console.WriteLine($"3. 던전 입장 - 현재 위치 : {dungeonFloor}층");
             Console.WriteLine("4. 휴식 하기");
             Console.WriteLine("5. 게임 종료");
 
@@ -192,6 +195,9 @@ namespace DietDungeon
                     break;
                 case 5:
                     Console.WriteLine("■ 게임을 종료합니다 ■");
+                    player.Floor = dungeonFloor;
+                    player.HpPotion = potions[0].PotionCount;
+                    player.MpPotion = potions[1].PotionCount;
                     FileUtil.SavePlayer(player);
                     return;
             }
@@ -631,6 +637,7 @@ namespace DietDungeon
             switch (CheckInput(0, 2))
             {
                 case 0:
+                    BattleInfo("Battle!!");
                     PlayerPhase();
                     break;
                 case 1:

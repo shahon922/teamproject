@@ -11,8 +11,10 @@ namespace DietDungeon
     {
         public Job Job { get; set; }
         public int Gold { get; set; }
-
         public int SkillCount { get; set; }
+        public int Floor { get; set; } = 1;
+        public int HpPotion { get; set; } = 3;
+        public int MpPotion { get; set; } = 3;
 
         public Player(string name, int level, Job job)
         {
