@@ -134,11 +134,6 @@ namespace DietDungeon
             Console.WriteLine("2. 던전 입장");
             Console.WriteLine("3. 휴식 하기");
             Console.WriteLine("4. 게임 종료");
-            Console.WriteLine("");
-
-            //
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-            //
 
             switch (CheckInput(1, 4))
             {
@@ -189,6 +184,39 @@ namespace DietDungeon
             }
         }
 
+        private static void Rest()
+        {
+            int minusGold = 500;
+
+            if(player.Hp != player.Job.Hp)
+            {
+                if(player.Gold >= minusGold)
+                {
+                    Console.WriteLine("체력이 회복되었습니다.");
+                    Console.WriteLine($"{player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
+                    player.Hp = player.Job.Hp;
+                    player.Gold -= minusGold;
+                }
+                else
+                {
+                    Console.WriteLine("Gold가 부족합니다.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("이미 체력이 가득 차 있습니다.");
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+
+            switch (CheckInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
 
         // Info
         private static void BattleInfo(string dungeonName)
@@ -421,44 +449,6 @@ namespace DietDungeon
             }
         }
 
-        // Rest
-        private static void Rest()
-        {
-            int minusGold = 500;
-            int maxHp = player.Job.Hp;
-
-            if (player.Hp == maxHp)
-            {
-                Console.WriteLine("체력이 이미 가득 차 있습니다.");
-            }
-            else
-            {
-                if (player.Gold >= minusGold)
-                {
-                    Console.WriteLine("체력을 회복했습니다.");
-                    player.Hp = maxHp;
-                    player.Gold -= minusGold;
-
-                }
-                else
-                {
-                    Console.WriteLine("Gold가 부족합니다.");
-                }
-            }
-
-            Console.WriteLine("");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine("");
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            switch (CheckInput(0, 0))
-            {
-                case 0:
-                    StartMenu();
-                    break;
-            }
-        }
-
 
         // Win / Lose
         private static void Victory()
@@ -472,15 +462,12 @@ namespace DietDungeon
            
             PlayerInfo();
 
-            int plusGold = (count * 500);
-
             Console.WriteLine("");
-            Console.WriteLine("[획득 아이템]");
+            Console.WriteLine("[아이템 획득]");
+            int plusGold = (count * 500);
             Console.WriteLine("{0} Gold", plusGold);
-
-            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
             player.Gold += plusGold;
-            
+
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
 
@@ -499,8 +486,6 @@ namespace DietDungeon
             ShowHighlightedText(" You Lose", ConsoleColor.Red);
                         
             PlayerInfo();
-
-            player.Hp = player.Job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
