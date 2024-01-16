@@ -16,10 +16,11 @@ namespace DietDungeon
 
         public int Level { get; set; }
         public String Name { get; set; } = "";
-        public int Atk { get; set; }
+        public float Atk { get; set; }
         public int Def { get; set; } = 0;
         public int Hp { get; set; }
         public int Mp { get; set; } = 0;
+        public int Exp { get; set; }
 
         public void Attack(Unit target)
         {
@@ -39,11 +40,11 @@ namespace DietDungeon
                 {
                     damage = (int)(damage * CriticalMultiply);
                 }
-                var error = (int)Math.Ceiling(damage / 10.0);
-                damage = rand.Next(damage - error, damage + error);
-                targetHealth = Math.Max(target.Hp - damage, 0);
+                var error = Math.Ceiling(damage / 10.0);
+                damage = rand.Next((int)(damage - error), (int)(damage + error));
+                targetHealth = Math.Max(target.Hp - (int)damage, 0);
 
-                PrintAttack(target, damage, isCritical, targetHealth);
+                PrintAttack(target, (int)damage, isCritical);
 
                 target.Hp = targetHealth;
             }
@@ -74,7 +75,7 @@ namespace DietDungeon
             Console.WriteLine($"{target.Name} 을(를) 공격했지만 아무일도 일어나지 않았습니다.");
         }
 
-        private void PrintAttack(Unit target, int damage, bool isCritical, int targetHealth)
+        private void PrintAttack(Unit target, int damage, bool isCritical)
         {
             Console.Write($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
             if (isCritical)

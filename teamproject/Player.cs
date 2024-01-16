@@ -22,6 +22,7 @@ namespace DietDungeon
             Def = job.Def;
             Mp = job.Mp;
             Gold = 1500;
+            Exp = 0;
         }
 
         public void UpgradeJob(Job job)

@@ -163,14 +163,15 @@ namespace DietDungeon
             ShowHighlightedText(" [상태 보기]");
             Console.WriteLine(" 캐릭터의 정보가 표시됩니다.");
             Console.WriteLine("");
-            PrintTextwithHighlights(" Lv. ", player.Level.ToString("00")); // 01, 07            
+            PrintTextwithHighlights(" Lv. ", player.Level.ToString("00")); // 01, 07      
+            PrintTextwithHighlights(" EXP : ", player.Exp.ToString());
             PrintTextwithHighlights(" 이름 : ", player.Name);
             PrintTextwithHighlights(" 직업 : ", player.Job.JobName);
             PrintTextwithHighlights(" 공격력 : ", player.Atk.ToString());
             PrintTextwithHighlights(" 방어력 : ", player.Def.ToString());
             PrintTextwithHighlights(" HP : ", player.Hp.ToString());
             PrintTextwithHighlights(" MP : ", player.Mp.ToString());
-            PrintTextwithHighlights(" Gold : ", player.Gold.ToString(), " G");
+            PrintTextwithHighlights(" GOLD : ", player.Gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
 
@@ -237,11 +238,21 @@ namespace DietDungeon
             Console.WriteLine("");
         }
 
-        private static void PlayerInfo()
+        private static void PlayerInfo(int originlevel = 0)
         {
             Console.WriteLine();
             Console.WriteLine(" [내 정보]");
-            Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job.JobName})");
+
+            if(originlevel != 0 && player.Level != originlevel)
+            {
+                Console.Write($" Lv.{originlevel} {player.Name} ({player.Job.JobName}) ->");
+                PrintTextwithHighlights("",$" Lv.{player.Level}",$" {player.Name} ({player.Job.JobName})");
+            }
+            else
+            {
+                Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job.JobName})");
+            }
+
             Console.WriteLine(" HP {0}/{1}", player.Hp, player.Job.Hp);
             Console.WriteLine(" MP {0}/{1}", player.Mp, player.Job.Mp);
         }
@@ -428,8 +439,7 @@ namespace DietDungeon
                 if (spawnMonsters.All(x => x.Hp == 0))
                 {
                     player.Mp -= playerSkill.SkillMp;
-                    Victory();
-                    return;
+                    break;
                 }
                 else
                 {
@@ -495,8 +505,8 @@ namespace DietDungeon
 
             Console.WriteLine("");
             Console.WriteLine("던전에서 몬스터 {0}마리를 잡았습니다.", count);
-           
-            PlayerInfo();
+
+            LevelUp();
 
             Console.WriteLine("");
             ShowHighlightedText(" [아이템 획득]");
@@ -518,6 +528,45 @@ namespace DietDungeon
                     StartMenu();
                     return;
             }
+        }
+
+        private static void LevelUp()
+        {
+            int originExp = player.Exp;
+            int originLevel = player.Level;
+
+            for (int i = 0; i < count; i++)
+            {
+                player.Exp += spawnMonsters[i].Level;
+            }
+
+            if (player.Exp >= 10)
+            {
+                player.Level = 2;
+                player.Atk += 0.5f;
+                player.Def += 1;
+            }
+            if (player.Exp >= 35)
+            {
+                player.Level = 3;
+                player.Atk += 0.5f;
+                player.Def += 1;
+            }
+            if (player.Exp >= 65)
+            {
+                player.Level = 4;
+                player.Atk += 0.5f;
+                player.Def += 1;
+            }
+            if (player.Exp >= 100)
+            {
+                player.Level = 5;
+                player.Atk += 0.5f;
+                player.Def += 1;
+            }
+
+            PlayerInfo(originLevel);
+            PrintTextwithHighlights($" Exp {originExp} -> ", $"{player.Exp}");
         }
 
         private static void Lose()
