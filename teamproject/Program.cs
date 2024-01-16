@@ -129,9 +129,10 @@ namespace DietDungeon
 
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 던전 입장");
-            Console.WriteLine("3. 게임 종료");
+            Console.WriteLine("3. 휴식 하기");
+            Console.WriteLine("4. 게임 종료");
 
-            switch (CheckInput(1, 3))
+            switch (CheckInput(1, 4))
             {
                 case 1:
                     StatusMenu();
@@ -141,6 +142,9 @@ namespace DietDungeon
                     BattleStart();
                     break;
                 case 3:
+                    Rest();
+                    break;
+                case 4:
                     Console.WriteLine("■ 게임을 종료합니다 ■");
                     return;
             }
@@ -172,6 +176,38 @@ namespace DietDungeon
             }
         }
 
+        private static void Rest()
+        {
+            int minusGold = 500;
+
+            if(player.Hp != player.job.Hp)
+            {
+                if(player.gold >= minusGold)
+                {
+                    Console.WriteLine("체력이 회복되었습니다.");
+                    player.Hp = player.job.Hp;
+                    player.gold -= minusGold;
+                }
+                else
+                {
+                    Console.WriteLine("Gold가 부족합니다.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("이미 체력이 가득 차 있습니다.");
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+
+            switch (CheckInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
 
         // Info
         private static void BattleInfo(string dungeonName)
@@ -351,7 +387,13 @@ namespace DietDungeon
 
             PlayerInfo();
 
-            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
+            Console.WriteLine("");
+            Console.WriteLine("[아이템 획득]");
+            int plusGold = (count * 500);
+            Console.WriteLine("{0} Gold", plusGold);
+            player.gold += plusGold;
+
+                   //player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
@@ -372,7 +414,7 @@ namespace DietDungeon
                         
             PlayerInfo();
 
-            player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
+                //player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
