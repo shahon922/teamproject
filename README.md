@@ -48,3 +48,12 @@ maxHP = player.Job.Hp로 변경
 
 수정  
 Victory와 Lose에서 HP초기화 코드 삭제  
+
+수정
+Unit.cs에서 AttackResult로 만들어서 관리
+-> 몬스터별 사망 문구 지정 가능
+Rest, StatusMenu, Victory UI 변경
+PlayerMultySkillAttack 만듬
+<주의>
+PlayerSkillAttack에서 제거된 내용은 오류때문에 제거한거여서 복구X
+
