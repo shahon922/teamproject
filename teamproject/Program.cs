@@ -185,6 +185,7 @@ namespace DietDungeon
                 if(player.gold >= minusGold)
                 {
                     Console.WriteLine("체력이 회복되었습니다.");
+                    Console.WriteLine($"{player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
                     player.Hp = player.job.Hp;
                     player.gold -= minusGold;
                 }
