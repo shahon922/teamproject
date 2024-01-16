@@ -67,3 +67,10 @@ StatusMenu UI변경
 창현님 Json 병합
 
 Rest, Victory에 MP회복 추가
+
+=potion 추가=
+체력포션, 마나포션 추가  
+전투 중 중간에 사용가능   
+victory에서 2가지 중 랜덤으로 포션 획득  
+
+아직 Json병합이 안되어 있음....
