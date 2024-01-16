@@ -18,6 +18,7 @@ namespace DietDungeon
         static Skill[] skills;
         static Monster[] monsters;
         static Monster[] spawnMonsters;
+        static Potion[] potions;
         static int count;
         static int dungeonFloor = 1;
 
@@ -82,8 +83,13 @@ namespace DietDungeon
             //Job
             jobs = new Job[3];
             jobs[0] = new Job("초보자", skills[0]);
-            jobs[1] = new Job("전사", 15, 10, 200, 50, skills[1], skills[2]);
-            jobs[2] = new Job("마법사", 10, 10, 150, 100, skills[3], skills[4]);
+            jobs[1] = new Job("헬스트레이너", 15, 10, 200, 50, skills[1], skills[2]);
+            jobs[2] = new Job("식품영양사", 10, 10, 150, 100, skills[3], skills[4]);
+
+            //Potion
+            potions = new Potion[2];
+            potions[0] = new Potion("체력 포션", 1, 5);
+            potions[1] = new Potion("마나 포션", 2, 5);
         }
 
         private static void PlayerSetting()
@@ -125,8 +131,8 @@ namespace DietDungeon
 
             Console.WriteLine("캐릭터의 직업을 선택해주세요.");
             Console.WriteLine("");
-            Console.WriteLine("1. 전사");
-            Console.WriteLine("2. 마법사");
+            Console.WriteLine("1. 헬스트레이너");
+            Console.WriteLine("2. 식품영양사");
 
             switch (CheckInput(1, 2))
             {
@@ -158,26 +164,30 @@ namespace DietDungeon
             Console.WriteLine("[활동 선택]\n");
 
             Console.WriteLine("1. 상태 보기");
-            Console.WriteLine($"2. 던전 입장 - 현재 위치 : {dungeonFloor}층");
-            Console.WriteLine("3. 휴식 하기");
-            Console.WriteLine("4. 게임 종료");
+            Console.WriteLine("2. 포션 보기");
+            Console.WriteLine("3. 던전 입장");
+            Console.WriteLine("4. 휴식 하기");
+            Console.WriteLine("5. 게임 종료");
 
             Console.WriteLine("");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckInput(1, 4))
+            switch (CheckInput(1, 5))
             {
                 case 1:
                     StatusMenu();
                     break;
                 case 2:
+                    PotionMenu();
+                    break;
+                case 3:
                     BattleInfo("[다이어트 던전]");
                     BattleStart();
                     break;
-                case 3:
+                case 4:
                     Rest();
                     break;
-                case 4:
+                case 5:
                     Console.WriteLine("■ 게임을 종료합니다 ■");
                     FileUtil.SavePlayer(player);
                     return;
@@ -211,6 +221,27 @@ namespace DietDungeon
                 case 0:
                     StartMenu();
                     return;
+            }
+        }
+
+        private static void PotionMenu()
+        {
+            Console.Clear();
+
+            ShowHighlightedText(" [포션 보기]");
+            Console.WriteLine(" 포션의 정보가 표시됩니다.");
+            Console.WriteLine("");
+            PotionInfo();
+            Console.WriteLine("");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckInput(0, 0))
+            {
+                case 0:
+                    StartMenu();
+                    break;
             }
         }
 
@@ -402,17 +433,21 @@ namespace DietDungeon
             Console.WriteLine("");
             Console.WriteLine("1. 일반 공격");
             Console.WriteLine("2. 스킬 공격");
+            Console.WriteLine("3. 포션 사용");
 
             Console.WriteLine("");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckInput(1, 2))
+            switch (CheckInput(1, 3))
             {
                 case 1:
                     PlayerAttack();
                     break;
                 case 2:
                     PlayerSkillAttack();
+                    break;
+                case 3:
+                    PotionType();
                     break;
             }
         }
@@ -531,6 +566,101 @@ namespace DietDungeon
             }
         }
 
+        private static void PotionType()
+        {
+            Console.WriteLine("[포션 선택]");
+            Console.WriteLine();
+
+            PotionInfo();
+
+            Console.WriteLine("");
+            Console.WriteLine("0. 뒤로 가기");
+
+            switch (CheckInput(0, 2))
+            {
+                case 0:
+                    PlayerPhase();
+                    break;
+                case 1:
+                    PotionUse(1);
+                    break;
+                case 2:
+                    PotionUse(2);
+                    break;
+            }
+        }
+
+        private static void PotionUse(int typeNum)
+        {
+            int recovery = 30;
+
+            if (potions[0].Type == typeNum)
+            {
+                if (potions[0].PotionCount > 0)
+                {
+                    if (player.Hp != player.Job.Hp)
+                    {
+                        Console.WriteLine("포션 1개를 사용했습니다.");
+                        Console.WriteLine("체력 30을 회복을 완료했습니다.");
+                        potions[0].PotionCount--;
+                        player.Hp += recovery;
+                        if (player.Hp > player.Job.Hp)
+                        {
+                            player.Hp = player.Job.Hp;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("포션이 부족합니다.");
+                }
+            }
+            else if (potions[1].Type == typeNum)
+            {
+                if (potions[1].PotionCount > 0)
+                {
+                    if (player.Mp != player.Job.Mp)
+                    {
+                        Console.WriteLine("포션 1개를 사용했습니다.");
+                        Console.WriteLine("마나 30을 회복을 완료했습니다.");
+                        potions[1].PotionCount--;
+                        player.Mp += recovery;
+                        if (player.Mp > player.Job.Mp)
+                        {
+                            player.Mp = player.Job.Mp;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("포션이 부족합니다.");
+                }
+            }
+
+            Console.WriteLine("1. 다음턴");
+
+            switch (CheckInput(1, 1))
+            {
+                case 1:
+                    BattleInfo("Battle!!");
+                    MonsterAttack();
+                    break;
+            }
+        }
+
+        private static void PotionInfo()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("1");
+            Console.ResetColor();
+            Console.WriteLine("{0} 개수: {1} 개", potions[0].PotionName, potions[0].PotionCount);
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("2");
+            Console.ResetColor();
+            Console.WriteLine("{0} 개수: {1} 개", potions[1].PotionName, potions[1].PotionCount);
+        }
+
         private static void MonsterAttack()
         {
             bool result = spawnMonsters.All(x => x.Hp == 0);
@@ -584,6 +714,20 @@ namespace DietDungeon
             player.Gold += plusGold;
 
             Console.WriteLine(" {0} Gold", plusGold);
+
+            Random prand = new Random();
+            int plusPotion = prand.Next(1, 3);
+
+            if (plusPotion == 1)
+            {
+                Console.WriteLine("체력 포션 : {0} 개", count);
+                potions[0].PotionCount += count;
+            }
+            else if (plusPotion == 2)
+            {
+                Console.WriteLine("마나 포션 : {0} 개", count);
+                potions[1].PotionCount += count;
+            }
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");

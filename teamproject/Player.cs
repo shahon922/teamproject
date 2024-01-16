@@ -35,4 +35,18 @@ namespace DietDungeon
         }
 
     }
+
+    public class Potion
+    {
+        public string PotionName { get; set; }
+        public int Type { get; set; }
+        public int PotionCount { get; set; }
+
+        public Potion(string potionName, int type, int potionCount)
+        {
+            PotionName = potionName;
+            Type = type;
+            PotionCount = potionCount;
+        }
+    }
 }
