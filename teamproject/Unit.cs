@@ -107,8 +107,10 @@ namespace DietDungeon
 
                 if(target.Name == "콜라")
                     Console.WriteLine("◇ 모든 콜라가 제로 콜라로 바뀌었습니다! ◇");
-                else
+                else if (target.Name == "탕후루" || target.Name == "떡볶이" || target.Name == "대창")
                     Console.WriteLine($"◇ {target.Name}집이 망했습니다! ◇");
+                else
+                    Console.WriteLine("◇ 플레이어가 죽었습니다! ◇");
 
                 targetHealth = 0;
 
