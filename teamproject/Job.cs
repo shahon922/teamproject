@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace teamproject
@@ -18,7 +19,7 @@ namespace teamproject
 
         public int SkillCount { get; set; }
 
-
+        [JsonConstructor]
         public Job(string jobName, int atk, int def, int hp, int mP, Skill skill1, Skill skill2)
         {
             JobName = jobName;
