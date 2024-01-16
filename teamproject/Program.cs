@@ -81,8 +81,8 @@ namespace DietDungeon
             //Job
             jobs = new Job[3];
             jobs[0] = new Job("초보자", skills[0]);
-            jobs[1] = new Job("전사", 15, 10, 200, 50, skills[1], skills[2]);
-            jobs[2] = new Job("마법사", 10, 10, 150, 100, skills[3], skills[4]);
+            jobs[1] = new Job("헬스트레이너", 15, 10, 200, 50, skills[1], skills[2]);
+            jobs[2] = new Job("식품영양사", 10, 10, 150, 100, skills[3], skills[4]);
         }
 
         private static void PlayerSetting()
@@ -124,8 +124,8 @@ namespace DietDungeon
 
             Console.WriteLine("캐릭터의 직업을 선택해주세요.");
             Console.WriteLine("");
-            Console.WriteLine("1. 전사");
-            Console.WriteLine("2. 마법사");
+            Console.WriteLine("1. 헬스트레이너");
+            Console.WriteLine("2. 식품영양사");
 
             switch (CheckInput(1, 2))
             {
