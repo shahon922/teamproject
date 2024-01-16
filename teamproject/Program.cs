@@ -188,14 +188,14 @@ namespace DietDungeon
         {
             int minusGold = 500;
 
-            if(player.Hp != player.job.Hp)
+            if(player.Hp != player.Job.Hp)
             {
-                if(player.gold >= minusGold)
+                if(player.Gold >= minusGold)
                 {
                     Console.WriteLine("체력이 회복되었습니다.");
                     Console.WriteLine($"{player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
-                    player.Hp = player.job.Hp;
-                    player.gold -= minusGold;
+                    player.Hp = player.Job.Hp;
+                    player.Gold -= minusGold;
                 }
                 else
                 {
@@ -449,44 +449,6 @@ namespace DietDungeon
             }
         }
 
-        // Rest
-        private static void Rest()
-        {
-            int minusGold = 500;
-            int maxHp = player.Job.Hp;
-
-            if (player.Hp == maxHp)
-            {
-                Console.WriteLine("체력이 이미 가득 차 있습니다.");
-            }
-            else
-            {
-                if (player.Gold >= minusGold)
-                {
-                    Console.WriteLine("체력을 회복했습니다.");
-                    player.Hp = maxHp;
-                    player.Gold -= minusGold;
-
-                }
-                else
-                {
-                    Console.WriteLine("Gold가 부족합니다.");
-                }
-            }
-
-            Console.WriteLine("");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine("");
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            switch (CheckInput(0, 0))
-            {
-                case 0:
-                    StartMenu();
-                    break;
-            }
-        }
-
 
         // Win / Lose
         private static void Victory()
@@ -504,7 +466,7 @@ namespace DietDungeon
             Console.WriteLine("[아이템 획득]");
             int plusGold = (count * 500);
             Console.WriteLine("{0} Gold", plusGold);
-            player.gold += plusGold;
+            player.Gold += plusGold;
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
