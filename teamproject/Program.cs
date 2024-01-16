@@ -94,7 +94,7 @@ namespace DietDungeon
             {
                 Console.WriteLine("1. 새로 만들기");
                 Console.WriteLine("2. 저장된 플레이어 불러오기");
-                Console.WriteLine("");
+                
                 switch (CheckInput(1, 2))
                 {
                     case 1:
@@ -209,37 +209,76 @@ namespace DietDungeon
             {
                 case 0:
                     StartMenu();
-                    break;
+                    return;
             }
         }
 
         private static void Rest()
         {
-            int minusGold = 500;
+            int minusGold;
 
             Console.Clear();
 
             ShowHighlightedText(" [목욕탕 - 휴식]");
             Console.WriteLine();
+            Console.WriteLine(" 체력과 MP를 회복할 수 있습니다.");
 
-            if (player.Hp != player.Job.Hp)
+            Console.WriteLine("");
+            Console.WriteLine("1. 체력 회복 - 500G");
+            Console.WriteLine("2. MP 회복 - 200G");
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            switch (CheckInput(0, 2))
             {
-                if(player.Gold >= minusGold)
-                {
-                    Console.WriteLine(" 체력이 회복되었습니다.");
-                    Console.WriteLine($" {player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
-                    player.Hp = player.Job.Hp;
-                    player.Gold -= minusGold;
-                }
-                else
-                {
-                    Console.WriteLine(" Gold가 부족합니다.");
-                }
-            }
-            else
-            {
-                Console.WriteLine(" 이미 체력이 가득 차 있습니다.");
-            }
+                case 0:
+                    StartMenu();
+                    return;
+                case 1:
+                    minusGold = 500;
+                    if (player.Hp != player.Job.Hp)
+                    {
+                        if (player.Gold >= minusGold)
+                        {
+                            Console.WriteLine(" 체력이 회복되었습니다.");
+                            Console.WriteLine($" {player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
+                            player.Hp = player.Job.Hp;
+                            player.Gold -= minusGold;
+                        }
+                        else
+                        {
+                            Console.WriteLine(" Gold가 부족합니다.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(" 이미 체력이 가득 차 있습니다.");
+                    }
+                    break;
+                case 2:
+                    minusGold = 200;
+                    if (player.Mp != player.Job.Mp)
+                    {
+                        if (player.Gold >= minusGold)
+                        {
+                            Console.WriteLine(" MP가 회복되었습니다.");
+                            Console.WriteLine($" {player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
+                            player.Mp = player.Job.Mp;
+                            player.Gold -= minusGold;
+                        }
+                        else
+                        {
+                            Console.WriteLine(" Gold가 부족합니다.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(" 이미 MP가 가득 차 있습니다.");
+                    }
+                    break;
+            }           
 
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
@@ -251,7 +290,7 @@ namespace DietDungeon
             {
                 case 0:
                     StartMenu();
-                    break;
+                    return;
             }
         }
 
@@ -344,7 +383,7 @@ namespace DietDungeon
             {
                 case 0:
                     StartMenu();
-                    break;
+                    return;
                 case 1:
                     BattleInfo("Battle!!");
                     PlayerPhase();
@@ -526,6 +565,8 @@ namespace DietDungeon
         // Win / Lose
         private static void Victory()
         {
+            player.Mp += 10;
+
             BattleInfo("Battle!! - Result");
 
             ShowHighlightedText(" Victory", ConsoleColor.Green);

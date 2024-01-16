@@ -66,3 +66,4 @@ levelup함수 추가
 StatusMenu UI변경
 창현님 Json 병합
 
+Rest, Victory에 MP회복 추가
