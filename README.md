@@ -57,3 +57,12 @@ PlayerMultySkillAttack 만듬
 <주의>
 PlayerSkillAttack에서 제거된 내용은 오류때문에 제거한거여서 복구X
 
+=LevelUP 추가=
+Victory안에 경험치 보상 추가
+Unit.cs -> Atk float바꿈 형변환
+Unit에 exp 생성
+PlayerInfo 레벨업시 if문 추가
+levelup함수 추가
+StatusMenu UI변경
+창현님 Json 병합
+
