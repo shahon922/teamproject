@@ -393,8 +393,6 @@ namespace DietDungeon
             Console.WriteLine("{0} Gold", plusGold);
             player.gold += plusGold;
 
-                   //player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
-
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
 
@@ -413,8 +411,6 @@ namespace DietDungeon
             ShowHighlightedText(" You Lose", ConsoleColor.Red);
                         
             PlayerInfo();
-
-                //player.Hp = player.job.Hp;// hp 초기화 나중에 회복실만들기
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
