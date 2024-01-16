@@ -69,7 +69,7 @@ namespace DietDungeon
             //Monster
             monstersCount = 5;
             monsters = new Monster[monstersCount];
-            monsters[0] = new Monster("피자나라 치킨공주", 1, 15, 2);
+            monsters[0] = new Monster("피자 치킨 햄버거 세트", 1, 15, 2);
             monsters[1] = new Monster("탕후루", 2, 15, 5);
             monsters[2] = new Monster("떡볶이", 3, 25, 9);
             monsters[3] = new Monster("대창", 5, 20, 8);
@@ -112,7 +112,8 @@ namespace DietDungeon
                         break;
                     case 2:
                         player = FileUtil.LoadPlayer();
-                        dungeonFloor = player.Floor;
+                        //dungeonFloor = player.Floor;
+                        dungeonFloor = 10;
                         potions[0].PotionCount = player.HpPotion;
                         potions[1].PotionCount = player.MpPotion;
                         break;
@@ -414,12 +415,12 @@ namespace DietDungeon
             {
                 count = 1;
 
-                monsters[0].Level *= dungeonFloor;
-                monsters[0].Hp *= dungeonFloor;
-                monsters[0].Atk *= dungeonFloor;
-
                 spawnMonsters = new Monster[count];
                 spawnMonsters[0] = new Monster(monsters[0]);
+
+                spawnMonsters[0].Level = monsters[0].Level * dungeonFloor;
+                spawnMonsters[0].Hp = monsters[0].Hp * dungeonFloor;
+                spawnMonsters[0].Atk = monsters[0].Atk * dungeonFloor;
             }
             // Normal
             else
@@ -517,7 +518,7 @@ namespace DietDungeon
                         Console.ReadKey();
                         BattleInfo("Battle!!");
                         PlayerPhase();
-                        break;
+                        return;
                     }
                     else if (skill == true) //스킬공격
                     {
@@ -793,15 +794,23 @@ namespace DietDungeon
             ShowHighlightedText(" [아이템 획득]");
 
             int plusGold = (count * 500);
+            int bossGold;
 
-            if (dungeonFloor % 10 != 0)
-                player.Gold += plusGold;
+            if (dungeonFloor % 10 == 0)
+            {
+                bossGold = (plusGold * dungeonFloor / 10) + plusGold;
+                player.Gold += bossGold;
+                Console.WriteLine(" {0} Gold", bossGold);
+            }
             else
-                player.Gold += (plusGold * dungeonFloor / 10) + plusGold;            
+            {
+                player.Gold += plusGold;
+                Console.WriteLine(" {0} Gold", plusGold);
+            }
 
             dungeonFloor += 1;
 
-            Console.WriteLine(" {0} Gold", plusGold);
+            
 
             Random prand = new Random();
             int plusPotion = prand.Next(1, 3);

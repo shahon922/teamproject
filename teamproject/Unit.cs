@@ -72,6 +72,7 @@ namespace DietDungeon
 
         private void PrintAttackMiss(Unit target) //치명타 및 회피 기능
         {
+            Console.WriteLine();
             Console.WriteLine($"{target.Name} 을(를) 공격했지만 아무일도 일어나지 않았습니다.");
         }
 
@@ -105,12 +106,14 @@ namespace DietDungeon
                 Console.WriteLine($"Dead");
                 Console.WriteLine();
 
-                if(target.Name == "콜라")
+                if (target.Name == "콜라")
                     Console.WriteLine("◇ 모든 콜라가 제로 콜라로 바뀌었습니다! ◇");
                 else if (target.Name == "탕후루" || target.Name == "떡볶이" || target.Name == "대창")
                     Console.WriteLine($"◇ {target.Name}집이 망했습니다! ◇");
+                else if (target.Name == "피자 치킨 햄버거 세트")
+                    Console.WriteLine($"◇ 세상의 모든 {target.Name}를 전부 기부했습니다! ◇");
                 else
-                    Console.WriteLine("◇ 플레이어가 죽었습니다! ◇");
+                    Console.WriteLine("◇ 플레이어는 다이어트에 실패했습니다! ◇");
 
                 targetHealth = 0;
 
