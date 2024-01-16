@@ -19,6 +19,7 @@ namespace DietDungeon
         static Monster[] monsters;
         static Monster[] spawnMonsters;
         static int count;
+        static int dungeonFloor = 1;
 
         static void Main(string[] args)
         {
@@ -157,7 +158,7 @@ namespace DietDungeon
             Console.WriteLine("[활동 선택]\n");
 
             Console.WriteLine("1. 상태 보기");
-            Console.WriteLine("2. 던전 입장");
+            Console.WriteLine($"2. 던전 입장 - 현재 위치 : {dungeonFloor}층");
             Console.WriteLine("3. 휴식 하기");
             Console.WriteLine("4. 게임 종료");
 
