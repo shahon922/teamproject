@@ -17,6 +17,7 @@ namespace DietDungeon
         static Job[] jobs;
         static Skill[] skills;
         static Monster[] monsters;
+        static int monstersCount;
         static Monster[] spawnMonsters;
         static Potion[] potions;
         static int count;
@@ -66,11 +67,13 @@ namespace DietDungeon
         private static void GameDataSetting()
         {
             //Monster
-            monsters = new Monster[4];
-            monsters[0] = new Monster("탕후루", 2, 15, 5);
-            monsters[1] = new Monster("떡볶이", 3, 25, 9);
-            monsters[2] = new Monster("대창", 5, 20, 8);
-            monsters[3] = new Monster("콜라", 1, 10, 7);
+            monstersCount = 5;
+            monsters = new Monster[monstersCount];
+            monsters[0] = new Monster("피자나라 치킨공주", 1, 15, 2);
+            monsters[1] = new Monster("탕후루", 2, 15, 5);
+            monsters[2] = new Monster("떡볶이", 3, 25, 9);
+            monsters[3] = new Monster("대창", 5, 20, 8);
+            monsters[4] = new Monster("콜라", 1, 10, 7);
 
             //Skill
             skills = new Skill[5];
@@ -181,7 +184,7 @@ namespace DietDungeon
                     PotionMenu();
                     break;
                 case 3:
-                    BattleInfo("[다이어트 던전]");
+                    BattleInfo($"[다이어트 던전] - {dungeonFloor}층");
                     BattleStart();
                     break;
                 case 4:
@@ -351,13 +354,23 @@ namespace DietDungeon
                 Console.WriteLine($" Lv.{player.Level} {player.Name} ({player.Job.JobName})");
             }
 
+            if (player.Hp <= 0) // 공격당할때 0보다 내려가면 0이 되게 했지만 혹시를 대비해 한번더
+                player.Hp = 0;
+
             Console.WriteLine(" HP {0}/{1}", player.Hp, player.Job.Hp);
+
+            if (player.Mp <= 0)
+                player.Mp = 0;
+
             Console.WriteLine(" MP {0}/{1}", player.Mp, player.Job.Mp);
         }
 
         private static void MonsterInfo(bool battle = true)
         {
             Console.WriteLine(" [몬스터 정보]");
+
+            if (dungeonFloor % 10 == 0)
+                ShowHighlightedText(" ◆ BOSS ◆");
 
             for (int i = 0; i < count; i++)
             {
@@ -376,29 +389,50 @@ namespace DietDungeon
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("1");
             Console.ResetColor();
-            PrintTextwithHighlights($". {player.Job.skill1.SkillName} - MP ", player.Job.skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.Job.skill1.SkillDescription}");
+            PrintTextwithHighlights($". {player.Job.Skill1.SkillName} - MP ", player.Job.Skill1.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.Skill1.SkillDescription}");
 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("2");
             Console.ResetColor();
-            PrintTextwithHighlights($". {player.Job.skill2.SkillName} - MP ", player.Job.skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
-            Console.WriteLine($"   {player.Job.skill2.SkillDescription}");
+            PrintTextwithHighlights($". {player.Job.Skill2.SkillName} - MP ", player.Job.Skill2.SkillMp.ToString(), "", ConsoleColor.Cyan);
+            Console.WriteLine($"   {player.Job.Skill2.SkillDescription}");
         }
 
+        private static void Monstersetting()
+        {
+            // Boss
+            if(dungeonFloor % 10 == 0)
+            {
+                count = 1;
+
+                monsters[0].Level *= dungeonFloor;
+                monsters[0].Hp *= dungeonFloor;
+                monsters[0].Atk *= dungeonFloor;
+
+                spawnMonsters = new Monster[count];
+                spawnMonsters[0] = new Monster(monsters[0]);
+            }
+            // Normal
+            else
+            {
+                int minMonster = (int)Math.Ceiling(dungeonFloor * 0.25);
+
+                count = new Random().Next(minMonster, minMonster + 4);
+                spawnMonsters = new Monster[count];
+
+                for (int i = 0; i < count; ++i)
+                {
+                    int idx = new Random().Next(1, monstersCount);
+                    spawnMonsters[i] = new Monster(monsters[idx]);
+                }
+            }
+        }
 
         // Battle
         private static void BattleStart()
         {
-            // Monster Setting
-            count = new Random().Next(1, 5);
-            spawnMonsters = new Monster[count];
-
-            for (int i = 0; i < count; ++i)
-            {
-                int idx = new Random().Next(0, 4);
-                spawnMonsters[i] = new Monster(monsters[idx]);
-            }
+            Monstersetting();
 
             MonsterInfo(false);
 
@@ -444,7 +478,7 @@ namespace DietDungeon
                     PlayerAttack();
                     break;
                 case 2:
-                    PlayerSkillAttack();
+                    PlayerSkill();
                     break;
                 case 3:
                     PotionType();
@@ -466,8 +500,7 @@ namespace DietDungeon
                 case 4:
                     if (spawnMonsters[CheckValue - 1].Hp <= 0)
                     {
-                        Console.WriteLine("이미 죽은 몬스터 입니다.");
-                        Console.WriteLine("다시 입력해주세요.");
+                        Console.WriteLine("이미 죽은 몬스터 입니다.");                        
                         Console.ReadKey();
                         BattleInfo("Battle!!");
                         PlayerPhase();
@@ -475,8 +508,8 @@ namespace DietDungeon
                     }
                     else if (skill == true) //스킬공격
                     {
-                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.Job.skill1);
-                        player.Mp -= player.Job.skill1.SkillMp;
+                        player.SkillAttack(spawnMonsters[CheckValue - 1], player.Job.Skill1);
+                        player.Mp -= player.Job.Skill1.SkillMp;
                         break;
                     }
                     else
@@ -497,37 +530,45 @@ namespace DietDungeon
             }
         }
 
-        private static void PlayerSkillAttack()
+        private static void PlayerSkill()
         {         
             Console.WriteLine("[스킬 선택]");
             Console.WriteLine();
 
             SkillInfo();
 
-            switch (CheckInput(1, 2))
+            int checkSkill = CheckInput(1, player.SkillCount);
+
+            switch (checkSkill)
             {
                 case 1:
-                    if(player.Job.skill1.TargetCount == 1)
-                    {
-                        PlayerAttack(true);
-                        break;
-                    }
-                    else
-                    {
-                        PlayerMultySkillAttack(player.Job.skill1);
-                        break;
-                    }
+                    PlayerSkillAttack(checkSkill);
+                    break;                    
                 case 2:
-                    if (player.Job.skill2.TargetCount == 1)
-                    {
-                        PlayerAttack(true);
-                        break;
-                    }
-                    else
-                    {
-                        PlayerMultySkillAttack(player.Job.skill2);
-                        break;
-                    }
+                    PlayerSkillAttack(checkSkill);
+                    break;
+            }
+        }
+
+        private static void PlayerSkillAttack(int checkSkill)
+        {
+            if (player.Mp >= (checkSkill == 1 ? player.Job.Skill1 : player.Job.Skill2).SkillMp)
+            {
+                if ((checkSkill == 1 ? player.Job.Skill1 : player.Job.Skill2).TargetCount == 1)
+                {
+                    PlayerAttack(true);
+                }
+                else
+                {
+                    PlayerMultySkillAttack((checkSkill == 1 ? player.Job.Skill1 : player.Job.Skill2));
+                }
+            }
+            else
+            {
+                Console.WriteLine("스킬을 사용하는데에 MP가 부족합니다.");
+                Console.ReadKey();
+                BattleInfo("Battle!!");
+                PlayerPhase();
             }
         }
 
@@ -670,11 +711,6 @@ namespace DietDungeon
                 Victory();
                 return;
             }
-            if (player.Hp <= 0)
-            {
-                Lose();
-                return;
-            }
             for (int i = 0; i < count; i++)
             {
                 if (spawnMonsters[i].Hp > 0)
@@ -686,6 +722,11 @@ namespace DietDungeon
             switch (CheckInput(1, 1))
             {
                 case 1:
+                    if (player.Hp <= 0)
+                    {
+                        Lose();
+                        return;
+                    }
                     BattleInfo("Battle!!");
                     PlayerPhase();
                     break;
@@ -703,7 +744,11 @@ namespace DietDungeon
             ShowHighlightedText(" Victory", ConsoleColor.Green);
 
             Console.WriteLine("");
-            Console.WriteLine("던전에서 몬스터 {0}마리를 잡았습니다.", count);
+            ShowHighlightedText($" {dungeonFloor}층 던전 Clear!");
+            dungeonFloor += 1;
+
+            Console.WriteLine("");
+            Console.WriteLine(" 던전에서 몬스터 {0}마리를 잡았습니다.", count);
 
             LevelUp();
 
@@ -730,16 +775,21 @@ namespace DietDungeon
             }
 
             Console.WriteLine("");
-            Console.WriteLine("1. 시작화면");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine("1. 던전 진행하기");
 
             Console.WriteLine("");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckInput(1, 1))
+            switch (CheckInput(0, 1))
             {
-                case 1:
+                case 0:
                     StartMenu();
                     return;
+                case 1:
+                    BattleInfo($"[다이어트 던전] - {dungeonFloor}층");
+                    BattleStart();
+                    break;
             }
         }
 
@@ -791,14 +841,14 @@ namespace DietDungeon
             PlayerInfo();
 
             Console.WriteLine("");
-            Console.WriteLine("1. 시작화면");
+            Console.WriteLine("0. 나가기");
 
             Console.WriteLine("");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (CheckInput(1, 1))
+            switch (CheckInput(0, 0))
             {
-                case 1:
+                case 0:
                     StartMenu();
                     return;
             }

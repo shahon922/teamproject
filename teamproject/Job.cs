@@ -14,9 +14,8 @@ namespace teamproject
         public int Def { get; set; }
         public int Hp { get; set; }
         public int Mp { get; set; }
-        public Skill skill1 { get; set; } = null;
-        public Skill skill2 { get; set; }
-
+        public Skill Skill1 { get; set; }
+        public Skill Skill2 { get; set; }
         public int SkillCount { get; set; }
 
         [JsonConstructor]
@@ -27,8 +26,8 @@ namespace teamproject
             Def = def;
             Hp = hp;
             Mp = mP;
-            this.skill1 = skill1;
-            this.skill2 = skill2;
+            this.Skill1 = skill1;
+            this.Skill2 = skill2;
             SkillCount = 2;
         }
         public Job(string jobName, Skill skill1)
@@ -38,8 +37,8 @@ namespace teamproject
             Def = 5;
             Hp = 100;
             Mp = 0;
-            this.skill1 = skill1;
-            this.skill2 = skill1;
+            this.Skill1 = skill1;
+            this.Skill2 = skill1;
             SkillCount = 0;
         }
     }

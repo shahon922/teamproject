@@ -12,6 +12,8 @@ namespace DietDungeon
         public Job Job { get; set; }
         public int Gold { get; set; }
 
+        public int SkillCount { get; set; }
+
         public Player(string name, int level, Job job)
         {
             Name = name;
@@ -23,6 +25,7 @@ namespace DietDungeon
             Mp = job.Mp;
             Gold = 1500;
             Exp = 0;
+            SkillCount = job.SkillCount;
         }
 
         public void UpgradeJob(Job job)
@@ -32,6 +35,7 @@ namespace DietDungeon
             Atk = job.Atk;
             Def = job.Def;
             Mp = job.Mp;
+            SkillCount++;
         }
 
     }
