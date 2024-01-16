@@ -11,6 +11,9 @@ namespace DietDungeon
         private const double CriticalMultiply = 1.6;
         private const double MissChance = 0.1;
 
+        // targetHealth저장용
+        private int targetHealth;
+
         public int Level { get; set; }
         public String Name { get; set; } = "";
         public int Atk { get; set; }
@@ -38,7 +41,7 @@ namespace DietDungeon
                 }
                 var error = (int)Math.Ceiling(damage / 10.0);
                 damage = rand.Next(damage - error, damage + error);
-                var targetHealth = Math.Max(target.Hp - damage, 0);
+                targetHealth = Math.Max(target.Hp - damage, 0);
 
                 PrintAttack(target, damage, isCritical, targetHealth);
 
@@ -55,7 +58,7 @@ namespace DietDungeon
             var rand = new Random();
             var error = Math.Ceiling(playerAtk / 10.0);
             var damage = rand.Next((int)(playerAtk - error), (int)(playerAtk + error));
-            var targetHealth = (int)(target.Hp - damage);
+            targetHealth = (int)(target.Hp - damage);
 
             Console.WriteLine($"Lv.{Level} {Name} 의 {skill.SkillName} 스킬 공격!");
             Console.WriteLine($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
@@ -63,19 +66,7 @@ namespace DietDungeon
             Console.WriteLine($"Lv.{target.Level} {target.Name}");
             Console.Write($"Hp {target.Hp} -> ");
 
-            if (targetHealth > 0)
-            {
-                Console.WriteLine($"{targetHealth}");
-                Console.WriteLine();
-            }
-            else
-            {
-                Console.WriteLine($"Dead");
-                targetHealth = 0;
-                Console.WriteLine();
-            }
-
-            target.Hp = targetHealth;
+            AttackResult(target);
         }
 
         private void PrintAttackMiss(Unit target) //치명타 및 회피 기능
@@ -88,7 +79,7 @@ namespace DietDungeon
             Console.Write($"{target.Name} 을(를) 맞췄습니다. [데미지: {damage}]");
             if (isCritical)
             {
-                Console.WriteLine("- [치명타 공격]!!!");
+                Console.WriteLine(" - [치명타 공격!!!]");
             }
             else
             {
@@ -98,14 +89,33 @@ namespace DietDungeon
             Console.WriteLine($"Lv.{target.Level} {target.Name}");
             Console.Write($"Hp {target.Hp} -> ");
 
+            AttackResult(target);
+        }
+
+        private void AttackResult(Unit target)
+        {
             if (targetHealth > 0)
             {
                 Console.WriteLine($"{targetHealth}");
+                Console.WriteLine();
             }
             else
             {
                 Console.WriteLine($"Dead");
+                Console.WriteLine();
+
+                if(target.Name == "콜라")
+                    Console.WriteLine("◇ 모든 콜라가 제로 콜라로 바뀌었습니다! ◇");
+                else
+                    Console.WriteLine($"◇ {target.Name}집이 망했습니다! ◇");
+
+                targetHealth = 0;
+
+                Console.WriteLine();
             }
+
+            target.Hp = targetHealth;
         }
+
     }
 }

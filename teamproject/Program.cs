@@ -26,7 +26,7 @@ namespace DietDungeon
             GameDataSetting();
             PlayerSetting();
             StartMenu();
-        }
+         }
 
 
         // Setting
@@ -135,6 +135,9 @@ namespace DietDungeon
             Console.WriteLine("3. 휴식 하기");
             Console.WriteLine("4. 게임 종료");
 
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             switch (CheckInput(1, 4))
             {
                 case 1:
@@ -157,24 +160,22 @@ namespace DietDungeon
         {
             Console.Clear();
 
-            ShowHighlightedText("상태 보기");
-            Console.WriteLine("캐릭터의 정보가 표시됩니다.");
+            ShowHighlightedText(" [상태 보기]");
+            Console.WriteLine(" 캐릭터의 정보가 표시됩니다.");
             Console.WriteLine("");
-            PrintTextwithHighlights("Lv. ", player.Level.ToString("00")); // 01, 07            
-            PrintTextwithHighlights("이름 : ", player.Name);
-            PrintTextwithHighlights("직업 : ", player.Job.JobName);
-            PrintTextwithHighlights("공격력 : ", player.Atk.ToString());
-            PrintTextwithHighlights("방어력 : ", player.Def.ToString());
-            PrintTextwithHighlights("HP : ", player.Hp.ToString());
-            PrintTextwithHighlights("MP : ", player.Mp.ToString());
-            PrintTextwithHighlights("Gold : ", player.Gold.ToString(), " G");
+            PrintTextwithHighlights(" Lv. ", player.Level.ToString("00")); // 01, 07            
+            PrintTextwithHighlights(" 이름 : ", player.Name);
+            PrintTextwithHighlights(" 직업 : ", player.Job.JobName);
+            PrintTextwithHighlights(" 공격력 : ", player.Atk.ToString());
+            PrintTextwithHighlights(" 방어력 : ", player.Def.ToString());
+            PrintTextwithHighlights(" HP : ", player.Hp.ToString());
+            PrintTextwithHighlights(" MP : ", player.Mp.ToString());
+            PrintTextwithHighlights(" Gold : ", player.Gold.ToString(), " G");
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
 
-            //
             Console.WriteLine("");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            //
 
             switch (CheckInput(0, 0))
             {
@@ -188,27 +189,35 @@ namespace DietDungeon
         {
             int minusGold = 500;
 
-            if(player.Hp != player.Job.Hp)
+            Console.Clear();
+
+            ShowHighlightedText(" [목욕탕 - 휴식]");
+            Console.WriteLine();
+
+            if (player.Hp != player.Job.Hp)
             {
                 if(player.Gold >= minusGold)
                 {
-                    Console.WriteLine("체력이 회복되었습니다.");
-                    Console.WriteLine($"{player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
+                    Console.WriteLine(" 체력이 회복되었습니다.");
+                    Console.WriteLine($" {player.Name}의 Gold가 {minusGold} G 소모되었습니다.");
                     player.Hp = player.Job.Hp;
                     player.Gold -= minusGold;
                 }
                 else
                 {
-                    Console.WriteLine("Gold가 부족합니다.");
+                    Console.WriteLine(" Gold가 부족합니다.");
                 }
             }
             else
             {
-                Console.WriteLine("이미 체력이 가득 차 있습니다.");
+                Console.WriteLine(" 이미 체력이 가득 차 있습니다.");
             }
 
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
+
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckInput(0, 0))
             {
@@ -290,6 +299,9 @@ namespace DietDungeon
             Console.WriteLine("0. 나가기");
             Console.WriteLine("1. 전투 시작");
 
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
             switch (CheckInput(0, 1))
             {
                 case 0:
@@ -312,6 +324,9 @@ namespace DietDungeon
             Console.WriteLine("");
             Console.WriteLine("1. 일반 공격");
             Console.WriteLine("2. 스킬 공격");
+
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckInput(1, 2))
             {
@@ -376,36 +391,57 @@ namespace DietDungeon
 
             SkillInfo();
 
-            int[] rand;
-
             switch (CheckInput(1, 2))
             {
                 case 1:
-                    PlayerAttack(true);
-                    return;
-                case 2:
-                    rand = new int[player.Job.skill2.TargetCount];
-                    for (int i = 0; i < player.Job.skill2.TargetCount; i++)
+                    if(player.Job.skill1.TargetCount == 1)
                     {
-                        if (spawnMonsters.All(x => x.Hp == 0))
-                        {
-                            Victory();
-                            player.Mp -= player.Job.skill2.SkillMp;
-                            return;
-                        }                            
-                        else
-                        {
-                            rand[i] = new Random().Next(0, count);
-                            while (spawnMonsters[rand[i]].Hp <= 0)
-                            {
-                                rand[i] = new Random().Next(0, count);
-                            }                       
-                            player.SkillAttack(spawnMonsters[rand[i]], player.Job.skill2);                            
-                        }
+                        PlayerAttack(true);
+                        break;
                     }
-                    player.Mp -= player.Job.skill2.SkillMp;
-                    break;
+                    else
+                    {
+                        PlayerMultySkillAttack(player.Job.skill1);
+                        break;
+                    }
+                case 2:
+                    if (player.Job.skill2.TargetCount == 1)
+                    {
+                        PlayerAttack(true);
+                        break;
+                    }
+                    else
+                    {
+                        PlayerMultySkillAttack(player.Job.skill2);
+                        break;
+                    }
             }
+        }
+
+        private static void PlayerMultySkillAttack(Skill playerSkill)
+        {
+            int[] rand;
+
+            rand = new int[playerSkill.TargetCount];
+            for (int i = 0; i < playerSkill.TargetCount; i++)
+            {
+                if (spawnMonsters.All(x => x.Hp == 0))
+                {
+                    player.Mp -= playerSkill.SkillMp;
+                    Victory();
+                    return;
+                }
+                else
+                {
+                    rand[i] = new Random().Next(0, count);
+                    while (spawnMonsters[rand[i]].Hp <= 0)
+                    {
+                        rand[i] = new Random().Next(0, count);
+                    }
+                    player.SkillAttack(spawnMonsters[rand[i]], playerSkill);
+                }
+            }
+            player.Mp -= playerSkill.SkillMp;
 
             Console.WriteLine("1. 다음턴");
 
@@ -463,19 +499,24 @@ namespace DietDungeon
             PlayerInfo();
 
             Console.WriteLine("");
-            Console.WriteLine("[아이템 획득]");
+            ShowHighlightedText(" [아이템 획득]");
+
             int plusGold = (count * 500);
-            Console.WriteLine("{0} Gold", plusGold);
             player.Gold += plusGold;
+
+            Console.WriteLine(" {0} Gold", plusGold);
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
+
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckInput(1, 1))
             {
                 case 1:
                     StartMenu();
-                    break;
+                    return;
             }
         }
 
@@ -489,13 +530,15 @@ namespace DietDungeon
 
             Console.WriteLine("");
             Console.WriteLine("1. 시작화면");
-            Console.WriteLine();
+
+            Console.WriteLine("");
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             switch (CheckInput(1, 1))
             {
                 case 1:
                     StartMenu();
-                    break;
+                    return;
             }
         }
 
