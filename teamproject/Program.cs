@@ -89,6 +89,32 @@ namespace DietDungeon
         {
             Console.Clear();
             Console.WriteLine("");
+            var existPlayer = FileUtil.ExistPlayer();
+            if (existPlayer)
+            {
+                Console.WriteLine("1. 새로 만들기");
+                Console.WriteLine("2. 저장된 플레이어 불러오기");
+                Console.WriteLine("");
+                switch (CheckInput(1, 2))
+                {
+                    case 1:
+                        CreatePlayer();
+                        break;
+                    case 2:
+                        player = FileUtil.LoadPlayer();
+                        break;
+                }
+            }
+            else
+            {
+                CreatePlayer();
+            }
+        }
+
+        private static void CreatePlayer()
+        {
+            Console.Clear();
+            Console.WriteLine("");
             Console.WriteLine("캐릭터의 이름을 입력해주세요.");
             Console.WriteLine("");
             Console.Write(">> ");
@@ -152,6 +178,7 @@ namespace DietDungeon
                     break;
                 case 4:
                     Console.WriteLine("■ 게임을 종료합니다 ■");
+                    FileUtil.SavePlayer(player);
                     return;
             }
         }
